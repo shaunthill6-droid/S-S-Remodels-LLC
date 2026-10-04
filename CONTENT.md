@@ -19,7 +19,7 @@ coverage area beyond "Spokane, WA and the surrounding area". Fill these in to la
       LLC filed 2026-10-04; no number yet. Nothing on the site claims licensing.
 - [ ] Service area detail — which towns / counties around Spokane
 - [ ] A photo of the owner / crew for an "About" section
-- [x] Domain + hosting — ssremodelz.com on GitHub Pages (live 2026-10-04)
+- [x] Domain + hosting: ssremodelz.com on GitHub Pages, HTTPS enforced (2026-10-04)
 
 ## Assets
 - `assets/ss-remodels-approved.png` — approved logo, untouched, 1536×1024, opaque white.
