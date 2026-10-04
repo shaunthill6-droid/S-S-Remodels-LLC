@@ -323,3 +323,31 @@ body { margin: 0; background: var(--earth-timber); }
 }
 /* anchor jumps land below the sticky header */
 .site section[id] { scroll-margin-top: 72px; }
+
+/* ---------- floating contact buttons (persistent) ---------- */
+.fab {
+  position: fixed; z-index: 60;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  display: flex; gap: .6rem; align-items: center;
+}
+.fab-btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  min-height: 52px; padding: 0 1.15rem;
+  border-radius: 999px; text-decoration: none;
+  font: 700 1rem/1 var(--ss-body-font);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 28%);
+}
+.fab-call { background: var(--earth-forest); color: #fff; border: 2px solid #fff; }
+.fab-call:hover { background: var(--earth-forest-hover); }
+.fab-save { background: var(--ss-paper); color: var(--ss-ink); border: 2px solid var(--earth-forest); }
+.fab-save:hover { background: var(--earth-sand); }
+.fab-btn:focus-visible { outline: 3px solid var(--earth-moss); outline-offset: 3px; }
+/* keep page bottom clear of the buttons */
+.site-footer { padding-bottom: calc(2.5rem + 72px); }
+@media (max-width: 560px) {
+  .fab { left: max(.75rem, env(safe-area-inset-left)); right: max(.75rem, env(safe-area-inset-right)); }
+  .fab-btn { flex: 1; justify-content: center; padding: 0 .75rem; }
+}
+.fab-btn span { white-space: nowrap; }
+@media (max-width: 560px) { .fab-btn { font-size: .95rem; gap: .4rem; } }
