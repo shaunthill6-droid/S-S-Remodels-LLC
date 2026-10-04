@@ -1,0 +1,113 @@
+S&S REMODELS LLC — APPROVED WEBSITE STYLE HANDOFF
+
+Paste the instructions below into Claude Code in the existing website repo.
+Give Claude this entire folder, including the approved PNG and CSS.
+
+TASK
+Restyle the existing S&S Remodels LLC website to match the approved attached
+logo. Inspect the repo, its instructions, framework, styles, components and
+existing routes first. Apply the supplied design system using the site's
+existing architecture. Preserve working content, navigation, forms, analytics,
+SEO metadata, project photos, integrations and contact details. Do not invent
+reviews, awards, licensing claims, experience, addresses or service coverage.
+
+APPROVED IDENTITY
+The approved file is ss-remodels-approved.png: broad charcoal S&S lettering,
+thin pointed emerald-chrome reflections inside the lower letter contours,
+warm gray REMODELS LLC, and Mount Rainier with pale green shading and an
+emerald ridgeline. This specific mountain and this specific lettering are
+approved. Use the provided image, not an AI recreation or a font approximation.
+Do not replace Rainier with a generic mountain or change it to Mount Spokane.
+
+FILES
+- ss-remodels-approved.png: original generated PNG, unchanged, 1536 x 1024.
+  Same approved design as the user's selected JPEG, without JPEG recompression.
+- ss-brand.css: portable scoped CSS, ready to adapt to the existing components.
+- This file: implementation instructions and visual acceptance criteria.
+
+COLORS
+Representative samples from the selected JPEG (gradients have many colors):
+- Main charcoal: #1B2524 (27,37,36), frequent solid interior lettering sample.
+- Warm gray: #564D46 (86,77,70), representative REMODELS lettering sample.
+- Emerald midtone: #008F5A (0,143,90), sampled green accent pixel.
+- Emerald dark: #00704A (0,112,74), sampled green accent pixel.
+- Mountain mint: #B8D8C0; pale mint #C0E0C8, dominant rounded color clusters.
+- Background: #FFFFFF, dominant corner sample.
+UI extensions, chosen to harmonize rather than claimed as exact image samples:
+- Chrome shadow #003D2D; reflected light #00E8A0; glint #C5FFF0.
+- Soft panel #F4F8F5; divider #DCE5DF.
+
+VISUAL DIRECTION
+Bright, spacious, precise residential-remodeling website with substantial
+charcoal type, restrained warm gray text and small emerald details. Keep
+emerald concentrated in calls to action, active states and thin highlights.
+Use real project photography prominently. Chrome is a detail, not a broad
+background treatment. Avoid neon glow, animated shine loops, giant green
+panels, tool icons, stock roof silhouettes and gaming-style decoration.
+
+LOGO PLACEMENT
+The PNG has an opaque white background and generous whitespace. Use it on
+white with its aspect ratio preserved. Never stretch, tint, invert or use
+mix-blend-mode to fake transparency; doing so alters the mint and chrome.
+Use the full approved mark in the hero where the mountain detail is legible.
+For a compact header, make a deterministic whitespace-trimmed copy ONLY if
+needed, preserving every visible part of the mountain and logo. Keep the
+original untouched. A small header can show the trimmed full logo with a
+readable adjacent site name; don't force the tiny embedded subtitle to act as
+navigation text. Do not enlarge the raster beyond its native resolution and
+call it vector. If a true transparent or vector asset is needed, report it as
+a separate asset requirement rather than quietly redrawing the logo.
+Alt text: S&S Remodels LLC — Spokane, WA.
+
+TYPOGRAPHY
+The logo lettering is custom generated artwork, not an identified font.
+Keep that lettering in the image. For website headings, reuse a suitable
+geometric sans already in the repo; map it to --ss-heading-font. If there is
+no suitable installed font, use the supplied system fallback. Use normal,
+readable body text. Wide tracking belongs on short labels only, not paragraphs.
+No new font downloads are required by this package.
+
+IMPLEMENTATION
+1. Import ss-brand.css after the site's base styles and add ss-brand to the
+   site wrapper. Do not blindly overwrite existing CSS or duplicate components.
+2. Map the tokens/classes to the existing design system. Where Tailwind is
+   already used, expose these same CSS variables through the existing theme.
+3. Use white as the main canvas. Alternate with soft mint-white sections and
+   at most a few charcoal areas. Keep the opaque logo on a white surface.
+4. Primary buttons: charcoal, white readable label, subtle 3px tapered chrome
+   reflection INSIDE the lower edge. Secondary buttons: white, charcoal text.
+5. Cards: quiet borders, 6px corners, minimal shadows. Chrome appears only
+   on selected featured elements, not every card or paragraph.
+6. Preserve real contact actions and form behavior. Keep labels visible,
+   keyboard focus clear, touch targets >=44px, and existing validation intact.
+7. Test at 375px, 768px and 1440px. Check logo visibility, overflow, menu,
+   form success/error states, contrast and reduced-motion preferences.
+8. Run the repo's relevant existing checks/build. Provide screenshots and
+   a concise change summary. Prepare the changes for review; do not deploy
+   or push unless the user's instructions in that session authorize it.
+
+EXAMPLE MARKUP (adapt to existing components, not a new site)
+<div class="ss-brand">
+  <section class="ss-section">
+    <div class="ss-container">
+      <img class="ss-logo" src="/assets/ss-remodels-approved.png"
+           width="1536" height="1024"
+           alt="S&S Remodels LLC — Spokane, WA">
+      <!-- Preserve the existing headline and contact destinations. -->
+      <a class="ss-button" href="#contact">Request an estimate</a>
+    </div>
+  </section>
+</div>
+
+ACCEPTANCE CRITERIA
+The approved logo remains visually unchanged. Website colors use these tokens
+consistently. Chrome accents are thin, tapered and restrained. The mountain
+is pale green, not gray or solid forest green. Website text is readable and
+the existing site's functionality is retained. The CSS chrome is an authored
+approximation of the raster reflections, not a pixel-perfect reconstruction.
+The actual logo image supplies the exact approved appearance.
+
+PACKAGE VALIDATION
+This package supplies design assets and portable styling. It has not been
+integrated with or browser-tested in the target repository. Claude must
+perform that integration and verification in the connected repo.

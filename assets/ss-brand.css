@@ -1,0 +1,138 @@
+/* S&S Remodels LLC — approved Rainier / emerald-chrome identity.
+   Scope to a wrapper with class="ss-brand". No framework required.
+   Colors sampled from approved artwork; UI gradients are interpretations. */
+.ss-brand {
+  --ss-paper: #ffffff;
+  --ss-ink: #1b2524;
+  --ss-gray: #564d46;
+  --ss-emerald: #008f5a;
+  --ss-emerald-dark: #00704a;
+  --ss-chrome-shadow: #003d2d;
+  --ss-chrome-light: #00e8a0;
+  --ss-chrome-glint: #c5fff0;
+  --ss-mint: #b8d8c0;
+  --ss-mint-light: #c0e0c8;
+  --ss-surface: #f4f8f5;
+  --ss-border: #dce5df;
+  --ss-chrome: linear-gradient(105deg,
+    #003d2d 0%, #00704a 20%, #008f5a 39%,
+    #00e8a0 48%, #c5fff0 50%, #00e8a0 52%,
+    #008f5a 62%, #00704a 82%, #003d2d 100%);
+  --ss-body-font: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ss-heading-font: var(--ss-body-font);
+  color: var(--ss-ink);
+  background: var(--ss-paper);
+  font-family: var(--ss-body-font);
+  line-height: 1.6;
+  color-scheme: light;
+}
+.ss-brand, .ss-brand * { box-sizing: border-box; }
+.ss-brand .ss-container {
+  width: min(100% - 2.5rem, 75rem);
+  margin-inline: auto;
+}
+.ss-brand .ss-section { padding-block: clamp(3rem, 7vw, 6rem); }
+.ss-brand .ss-heading {
+  margin: 0 0 1rem;
+  font-family: var(--ss-heading-font);
+  font-weight: 700;
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  line-height: 1.1;
+  letter-spacing: -.025em;
+  text-wrap: balance;
+}
+.ss-brand .ss-eyebrow {
+  color: var(--ss-emerald-dark);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .17em;
+  text-transform: uppercase;
+}
+.ss-brand .ss-copy { max-width: 65ch; color: var(--ss-gray); }
+.ss-brand .ss-link {
+  color: var(--ss-emerald-dark);
+  text-decoration: underline;
+  text-underline-offset: .2em;
+}
+.ss-brand .ss-logo {
+  display: block;
+  width: min(100%, 48rem);
+  height: auto;
+  margin-inline: auto;
+  /* Approved source is 1536×1024 with an opaque white background. */
+}
+.ss-brand .ss-button {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: .5rem;
+  min-height: 48px;
+  padding: .85rem 1.5rem;
+  border: 1px solid var(--ss-ink);
+  border-radius: 4px;
+  background: var(--ss-ink);
+  color: #fff;
+  font: 600 .95rem/1.25 var(--ss-body-font);
+  text-decoration: none;
+  cursor: pointer;
+  isolation: isolate;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+/* Thin chrome reflection INSIDE lower edge, with pointed ends. */
+.ss-brand .ss-button::after,
+.ss-brand .ss-chrome-accent::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  inset-inline: 8%;
+  bottom: 3px;
+  height: 3px;
+  background: var(--ss-chrome);
+  clip-path: polygon(0 85%, 72% 0, 100% 45%, 76% 100%);
+}
+.ss-brand .ss-button:hover { background-color: #263734; }
+.ss-brand .ss-button--secondary {
+  color: var(--ss-ink);
+  background: #fff;
+  border-color: #71877d;
+}
+.ss-brand .ss-button--secondary:hover { background: var(--ss-surface); }
+.ss-brand .ss-button--secondary::after { display: none; }
+.ss-brand :where(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid var(--ss-emerald-dark);
+  outline-offset: 4px;
+}
+.ss-brand .ss-button:disabled { opacity: .55; cursor: not-allowed; }
+.ss-brand .ss-card {
+  position: relative;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--ss-border);
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(27 37 36 / 4%);
+}
+.ss-brand .ss-surface { background: var(--ss-surface); }
+.ss-brand .ss-chrome-accent { position: relative; }
+.ss-brand .ss-input {
+  width: 100%;
+  min-height: 48px;
+  padding: .75rem 1rem;
+  border: 1px solid #71877d;
+  border-radius: 4px;
+  color: var(--ss-ink);
+  background: #fff;
+  font: inherit;
+}
+.ss-brand .ss-input::placeholder { color: #626d68; }
+.ss-brand .ss-dark {
+  color: #fff;
+  background: var(--ss-ink);
+}
+.ss-brand .ss-dark .ss-copy { color: #dce5df; }
+.ss-brand .ss-dark .ss-link,
+.ss-brand .ss-dark .ss-eyebrow { color: var(--ss-mint-light); }
+.ss-brand .ss-dark :focus-visible { outline-color: var(--ss-mint-light); }
+@media (prefers-reduced-motion: reduce) {
+  .ss-brand .ss-button { transition: none; }
+}
