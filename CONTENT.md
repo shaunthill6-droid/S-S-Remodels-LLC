@@ -9,8 +9,10 @@ coverage area beyond "Spokane, WA and the surrounding area". Fill these in to la
       (tested working 2026-10-03 ~11pm PT).
 - [x] **Form destination** — FormSubmit → shaunthill6@gmail.com. ⚠️ First submission triggers a
       one-time ACTIVATE email to that inbox; nothing arrives until it is clicked.
-- [x] **Services** (owner, 2026-10-04): exteriors except roofs · flooring · basement finishes · demolition.
-- [ ] **Project photos** — replace the four dashed "coming soon" tiles in `#projects`.
+- [x] **Services** (owner, 2026-10-04): generalist — "a little of everything". Examples shown, not a
+      fixed menu: exterior repairs (no roofs) · flooring · basement finishes · demolition · home repairs.
+- [x] **Experience** (owner, 2026-10-04): "20 years in residential home service and repairs".
+- [ ] **Project photos** — replace the three dashed "coming soon" tiles in `#projects`.
 
 ## Should have
 - [ ] WA contractor license number (and "licensed, bonded & insured" if true) → footer.
@@ -29,3 +31,11 @@ coverage area beyond "Spokane, WA and the surrounding area". Fill these in to la
   the mark's warm gray; the S's are the real lettering, not a font.
 - A transparent-background or vector logo does **not** exist yet. If one is needed (dark header,
   print, signage) it has to be produced separately — the raster must not be redrawn or blended.
+- `assets/hero-falls.jpg` / `hero-falls-sm.jpg` — hero background. "Olympic National Park, 2023 - 120"
+  (Sol Duc Falls) by Ryan Elwell, CC BY 2.0 — https://commons.wikimedia.org/wiki/File:Olympic_National_Park,_2023_-_120.jpg
+  Warm-graded and resized. **Attribution is required by the license** and is shown in the hero corner;
+  keep it unless the photo is replaced with one he owns.
+
+## Wording on the site that the owner should confirm
+- "Proudly American. Locally owned in Spokane, WA." (footer)
+- "Written estimates — scope and price in writing before we start"

@@ -4,15 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>S&amp;S Remodels LLC — Solutions, Simplified | Spokane, WA</title>
-  <meta name="description" content="Solutions, Simplified. S&amp;S Remodels LLC is a residential remodeling contractor in Spokane, WA. Exteriors, flooring, basement finishes and demolition — built right, built to last.">
+  <meta name="description" content="Solutions, Simplified. S&amp;S Remodels LLC — 20 years in residential home service and repairs in Spokane, WA. Exteriors, flooring, basement finishes and everything in between. If your home has a problem, we have a solution.">
   <meta property="og:title" content="S&amp;S Remodels LLC — Solutions, Simplified">
-  <meta property="og:description" content="Residential remodeling in Spokane, WA. Built right, built to last.">
+  <meta property="og:description" content="If your home has a problem, we have a solution. Home service and repairs in Spokane, WA.">
   <link rel="canonical" href="https://ssremodelz.com/">
   <meta property="og:url" content="https://ssremodelz.com/">
   <meta property="og:image" content="https://ssremodelz.com/assets/ss-remodels-approved.png">
   <meta property="og:type" content="website">
-  <meta name="theme-color" content="#1b2524">
+  <meta name="theme-color" content="#2a211a">
   <link rel="icon" href="assets/ss-logo-trimmed.png" type="image/png">
+  <link rel="preload" as="image" href="assets/hero-falls-sm.jpg" media="(max-width: 900px)">
+  <link rel="preload" as="image" href="assets/hero-falls.jpg" media="(min-width: 901px)">
   <link rel="stylesheet" href="assets/ss-brand.css">
   <link rel="stylesheet" href="assets/site.css">
 </head>
@@ -35,102 +37,111 @@
       </button>
 
       <nav class="site-nav" id="site-nav" aria-label="Main">
-        <a href="#services">Services</a>
+        <a href="#what-we-do">What we do</a>
         <a href="#how-we-work">How we work</a>
         <a href="#projects">Projects</a>
         <a href="#contact">Contact</a>
-        <a class="ss-button nav-cta" href="#contact">Request an estimate</a>
+        <a class="ss-button nav-cta" href="tel:+15092003095">(509) 200-3095</a>
       </nav>
     </div>
   </header>
 
   <main id="main">
 
-    <!-- ============ HERO ============ -->
-    <section class="ss-section hero" id="top">
+    <!-- ============ HERO: static waterfall ============ -->
+    <section class="hero" id="top">
       <div class="ss-container hero-inner">
-        <img class="ss-logo hero-logo" src="assets/ss-remodels-approved.png" width="1536" height="1024"
-             alt="S&amp;S Remodels LLC — Spokane, WA" fetchpriority="high">
-        <!-- Tagline. The two leading S's are cut from the approved logo (assets/tag-s.png), not a font. -->
-        <p class="tagline">
-          <span class="sr-only">Solutions, Simplified</span>
-          <span class="tagline-visual" aria-hidden="true"><span class="tagline-word"><img class="tagline-s" src="assets/tag-s.png" width="453" height="254" alt="">OLUTIONS,</span> <span class="tagline-word"><img class="tagline-s" src="assets/tag-s.png" width="453" height="254" alt="">IMPLIFIED</span></span>
-        </p>
-        <p class="ss-eyebrow">Residential remodeling · Spokane</p>
-        <h1 class="ss-heading hero-heading">Built right.<br>Built to last.</h1>
-        <p class="ss-copy hero-copy">
-          Exteriors, flooring, basement finishes and demolition — done by a crew that
-          shows up when it says it will, tells you straight what the job takes, and leaves your
-          home cleaner than it found it.
-        </p>
-        <div class="button-row">
-          <a class="ss-button" href="#contact">Request an estimate</a>
-          <a class="ss-button ss-button--secondary" href="#projects">See our work</a>
-        </div>
-      </div>
-    </section>
+        <div class="hero-col">
 
-    <!-- ============ SERVICES ============ -->
-    <section class="ss-section ss-surface" id="services">
-      <div class="ss-container">
-        <div class="section-head">
-          <p class="ss-eyebrow">What we do</p>
-          <h2 class="ss-heading">Remodeling, start to finish.</h2>
-          <p class="ss-copy">
-            One crew, one point of contact, one written plan. From the first walkthrough to the
-            final clean-up, you know who is on your property and what happens next.
+        <!-- Logo stays on its own white plaque (approved PNG has an opaque white background). -->
+        <div class="plaque">
+          <img class="ss-logo plaque-logo" src="assets/ss-remodels-approved.png" width="1536" height="1024"
+               alt="S&amp;S Remodels LLC — Spokane, WA" fetchpriority="high">
+          <!-- Tagline. The two leading S's are cut from the approved logo (assets/tag-s.png), not a font. -->
+          <p class="tagline">
+            <span class="sr-only">Solutions, Simplified</span>
+            <span class="tagline-visual" aria-hidden="true"><span class="tagline-word"><img class="tagline-s" src="assets/tag-s.png" width="453" height="254" alt="">OLUTIONS,</span> <span class="tagline-word"><img class="tagline-s" src="assets/tag-s.png" width="453" height="254" alt="">IMPLIFIED</span></span>
           </p>
         </div>
 
-        <ul class="card-grid" role="list">
-          <li class="ss-card service-card">
-            <h3>Exteriors</h3>
-            <p>Siding, windows, doors, trim, decks and porches — the outside of the house, built to stand up to Spokane winters. We don't do roofs.</p>
-          </li>
-          <li class="ss-card service-card">
-            <h3>Flooring</h3>
-            <p>Hardwood, laminate, vinyl plank and tile. Old floors out, subfloor fixed, new floors laid flat and tight.</p>
-          </li>
-          <li class="ss-card service-card">
-            <h3>Basement finishes</h3>
-            <p>Turn unfinished square footage into bedrooms, a family room or a shop — framed, insulated and finished to code.</p>
-          </li>
-          <li class="ss-card service-card">
-            <h3>Demolition</h3>
-            <p>Interior tear-outs, deck and shed removal, and site clean-up. Done safely, hauled away, swept clean.</p>
-          </li>
-        </ul>
+        <h1 class="hero-heading">If your home has a problem,<br>we have a solution.</h1>
+        <p class="hero-copy">
+          Exteriors, flooring, basement finishes — and everything in between.
+          Twenty years in residential home service and repairs.
+        </p>
+        <div class="button-row">
+          <a class="ss-button btn-earth" href="#contact">Tell us about your project</a>
+          <a class="ss-button ss-button--secondary btn-ghost" href="tel:+15092003095">Call (509) 200-3095</a>
+        </div>
+        </div>
+      </div>
+      <p class="photo-credit">Photo: Sol Duc Falls, WA — Ryan Elwell, <a href="https://creativecommons.org/licenses/by/2.0/" rel="license noopener" target="_blank">CC BY 2.0</a></p>
+    </section>
+
+    <!-- ============ PROOF STRIP ============ -->
+    <section class="proof" aria-label="At a glance">
+      <ul class="ss-container proof-list" role="list">
+        <li><strong>20 years</strong><span>in residential home service &amp; repairs</span></li>
+        <li><strong>Spokane, WA</strong><span>and the surrounding area</span></li>
+        <li><strong>Written estimates</strong><span>scope and price in writing before we start</span></li>
+      </ul>
+    </section>
+
+    <!-- ============ WHAT WE DO (generalized, not a fixed menu) ============ -->
+    <section class="ss-section sand" id="what-we-do">
+      <div class="ss-container what-grid">
+        <div class="section-head">
+          <p class="ss-eyebrow">What we do</p>
+          <h2 class="ss-heading">A little of everything.<br>All of it done right.</h2>
+          <p class="ss-copy">
+            You don't need a different contractor for every job around the house. Whether it's
+            a repair that's been nagging you or a project you've been planning for years, tell us
+            what's going on and we'll tell you straight how we'd handle it.
+          </p>
+          <a class="ss-link" href="#contact">Tell us about your project →</a>
+        </div>
+
+        <div class="ss-card jobs-card">
+          <h3>A few of the jobs we take on</h3>
+          <ul class="job-list" role="list">
+            <li>Exterior repairs &amp; upgrades <span>(no roofs)</span></li>
+            <li>Flooring</li>
+            <li>Basement finishes</li>
+            <li>Demolition &amp; tear-outs</li>
+            <li>Home service &amp; repairs</li>
+          </ul>
+          <p class="jobs-note">Don't see it listed? Ask. If it's on your house, there's a good chance we've handled it.</p>
+        </div>
       </div>
     </section>
 
     <!-- ============ HOW WE WORK (values) ============ -->
-    <section class="ss-section ss-dark" id="how-we-work">
+    <section class="ss-section timber" id="how-we-work">
       <div class="ss-container">
         <div class="section-head">
           <p class="ss-eyebrow">How we work</p>
-          <h2 class="ss-heading ss-chrome-accent values-heading">No shortcuts. No surprises.</h2>
+          <h2 class="ss-heading ss-chrome-accent values-heading">Integrity first. Pride in every job.</h2>
           <p class="ss-copy">
-            Remodeling is hard on a household. The job of a good contractor is to make it
-            predictable. Here is what you can hold us to.
+            The way we see it, your name is on every job you do. Ours is no different.
           </p>
         </div>
 
         <ul class="value-grid" role="list">
           <li class="value">
-            <h3>Straight talk</h3>
-            <p>A written scope and a written price before any work starts. If something changes, you hear it from us first — in writing, with the number attached.</p>
+            <h3>Our word is good</h3>
+            <p>A written scope and price before work starts. If something changes, you hear it from us first — with the number attached.</p>
           </li>
           <li class="value">
             <h3>We show up</h3>
-            <p>A schedule you can plan your life around. The crew arrives when we said it would and works the full day.</p>
+            <p>When we say we'll be there, we're there. A full day's work, every day we're on the job.</p>
           </li>
           <li class="value">
-            <h3>Done right</h3>
-            <p>Built to code, built square and built to last. We would rather do it once and do it properly than come back to fix it.</p>
+            <h3>Pride in the work</h3>
+            <p>Done square, done to code, done to last. We'd rather do it once and do it right than come back to fix it.</p>
           </li>
           <li class="value">
-            <h3>Your home, respected</h3>
-            <p>Dust walls up, floors protected, tools put away, site swept at the end of every day. You are still living here.</p>
+            <h3>Respect for your home</h3>
+            <p>Floors protected, tools put away, site swept at the end of every day. You're still living here.</p>
           </li>
         </ul>
       </div>
@@ -141,49 +152,48 @@
       <div class="ss-container">
         <div class="section-head">
           <p class="ss-eyebrow">The process</p>
-          <h2 class="ss-heading">Four steps. One crew.</h2>
+          <h2 class="ss-heading">Simple. Straightforward.</h2>
         </div>
 
         <ol class="step-list">
           <li class="step">
             <span class="step-num" aria-hidden="true">01</span>
-            <h3>Walkthrough</h3>
-            <p>We come to the house, look at the space, and talk through what you want and what the structure will allow.</p>
+            <h3>Tell us about it</h3>
+            <p>Call, text or send the form. Describe the problem or the project in your own words.</p>
           </li>
           <li class="step">
             <span class="step-num" aria-hidden="true">02</span>
-            <h3>Written estimate</h3>
-            <p>A line-item scope and price, with the materials and timeline spelled out. No vague allowances.</p>
+            <h3>We take a look</h3>
+            <p>We come out, see it in person and talk through the options.</p>
           </li>
           <li class="step">
             <span class="step-num" aria-hidden="true">03</span>
-            <h3>The build</h3>
-            <p>Demo, rough-in, inspections, finish work. You get a regular update and a single person to call.</p>
+            <h3>Written estimate</h3>
+            <p>The scope and the price in writing. No vague allowances, no surprises.</p>
           </li>
           <li class="step">
             <span class="step-num" aria-hidden="true">04</span>
-            <h3>Final walkthrough</h3>
-            <p>We walk every inch of it with you before we call it done. Anything that is not right gets fixed.</p>
+            <h3>Done right</h3>
+            <p>We do the work and walk it with you at the end. Anything that isn't right gets fixed.</p>
           </li>
         </ol>
       </div>
     </section>
 
     <!-- ============ PROJECTS (placeholder gallery) ============ -->
-    <section class="ss-section ss-surface" id="projects">
+    <section class="ss-section sand" id="projects">
       <div class="ss-container">
         <div class="section-head">
           <p class="ss-eyebrow">Our work</p>
           <h2 class="ss-heading">Recent projects.</h2>
-          <p class="ss-copy">Project photography is being added. Check back soon, or ask us to walk you through recent jobs.</p>
+          <p class="ss-copy">Project photos are on the way. In the meantime, ask us about recent jobs.</p>
         </div>
 
         <!-- TODO (owner): replace placeholders with real project photos. See CONTENT.md. -->
         <ul class="project-grid" role="list">
-          <li class="project-tile"><span>Exterior — photos coming soon</span></li>
-          <li class="project-tile"><span>Flooring — photos coming soon</span></li>
-          <li class="project-tile"><span>Basement — photos coming soon</span></li>
-          <li class="project-tile"><span>Demolition — photos coming soon</span></li>
+          <li class="project-tile"><span>Photos coming soon</span></li>
+          <li class="project-tile"><span>Photos coming soon</span></li>
+          <li class="project-tile"><span>Photos coming soon</span></li>
         </ul>
       </div>
     </section>
@@ -193,17 +203,12 @@
       <div class="ss-container contact-grid">
         <div class="contact-intro">
           <p class="ss-eyebrow">Get started</p>
-          <h2 class="ss-heading">Request an estimate.</h2>
+          <h2 class="ss-heading">Tell us about your project.</h2>
           <p class="ss-copy">
-            Tell us about the project and we will set up a walkthrough. Estimates are written,
-            itemized and free.
+            Big or small, describe what's going on and we'll get back to you to talk it through.
           </p>
 
           <dl class="contact-details">
-            <div>
-              <dt>Service area</dt>
-              <dd>Spokane, WA and the surrounding area</dd>
-            </div>
             <div>
               <dt>Phone</dt>
               <dd><a class="ss-link" href="tel:+15092003095">(509) 200-3095</a> — call or text</dd>
@@ -212,17 +217,22 @@
               <dt>Email</dt>
               <dd><a class="ss-link" href="mailto:shaun@ssremodelz.com">shaun@ssremodelz.com</a></dd>
             </div>
+            <div>
+              <dt>Service area</dt>
+              <dd>Spokane, WA and the surrounding area</dd>
+            </div>
           </dl>
         </div>
 
         <!-- Form delivery: FormSubmit (formsubmit.co) — no account; the first submission sends a
              one-time activation email to the inbox below. After activation, every request lands there. -->
         <form class="ss-card contact-form" id="estimate-form" action="https://formsubmit.co/shaunthill6@gmail.com" method="post" novalidate>
-          <input type="hidden" name="_subject" value="New estimate request — ssremodelz.com">
+          <input type="hidden" name="_subject" value="New project request — ssremodelz.com">
           <input type="hidden" name="_template" value="table">
           <input type="hidden" name="_captcha" value="false">
           <input type="hidden" name="_next" value="https://ssremodelz.com/?sent=1#contact">
           <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+
           <div class="field">
             <label for="f-name">Name</label>
             <input class="ss-input" id="f-name" name="name" type="text" autocomplete="name" required>
@@ -236,34 +246,22 @@
               <p class="field-error" id="f-phone-error" hidden>Please enter a phone number.</p>
             </div>
             <div class="field">
-              <label for="f-email">Email</label>
+              <label for="f-email">Email <span class="optional">(optional)</span></label>
               <input class="ss-input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email">
               <p class="field-error" id="f-email-error" hidden>That email address doesn't look right.</p>
             </div>
           </div>
 
           <div class="field">
-            <label for="f-type">Project type</label>
-            <select class="ss-input" id="f-type" name="project_type">
-              <option value="">Choose one</option>
-              <option>Exterior (siding, windows, doors, deck)</option>
-              <option>Flooring</option>
-              <option>Basement finish</option>
-              <option>Demolition</option>
-              <option>Something else</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="f-message">Tell us about the project</label>
-            <textarea class="ss-input" id="f-message" name="message" rows="5" required></textarea>
+            <label for="f-message">Tell us about your project</label>
+            <textarea class="ss-input" id="f-message" name="message" rows="6" required
+                      placeholder="What's going on, where in the house, and roughly when you'd like it done."></textarea>
             <p class="field-error" id="f-message-error" hidden>Give us a sentence or two about the job.</p>
           </div>
 
           <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
 
-          <button class="ss-button form-submit" type="submit">Send request</button>
-          <p class="form-note">We reply within one business day.</p>
+          <button class="ss-button btn-earth form-submit" type="submit">Send</button>
         </form>
       </div>
     </section>
@@ -274,20 +272,31 @@
   <footer class="site-footer">
     <div class="ss-container footer-row">
       <div class="footer-brand">
-        <img src="assets/ss-logo-trimmed.png" width="1520" height="699" alt="S&amp;S Remodels LLC — Spokane, WA">
-        <p class="tagline tagline--small">
-          <span class="sr-only">Solutions, Simplified</span>
-          <span class="tagline-visual" aria-hidden="true"><span class="tagline-word"><img class="tagline-s" src="assets/tag-s.png" width="453" height="254" alt="">OLUTIONS,</span> <span class="tagline-word"><img class="tagline-s" src="assets/tag-s.png" width="453" height="254" alt="">IMPLIFIED</span></span>
-        </p>
-        <p>Residential remodeling · Spokane, WA</p>
+        <div class="footer-plaque">
+          <img src="assets/ss-logo-trimmed.png" width="1520" height="699" alt="S&amp;S Remodels LLC — Spokane, WA">
+          <p class="tagline tagline--small">
+            <span class="sr-only">Solutions, Simplified</span>
+            <span class="tagline-visual" aria-hidden="true"><span class="tagline-word"><img class="tagline-s" src="assets/tag-s.png" width="453" height="254" alt="">OLUTIONS,</span> <span class="tagline-word"><img class="tagline-s" src="assets/tag-s.png" width="453" height="254" alt="">IMPLIFIED</span></span>
+          </p>
+        </div>
       </div>
       <nav class="footer-nav" aria-label="Footer">
-        <a href="#services">Services</a>
+        <a href="#what-we-do">What we do</a>
         <a href="#how-we-work">How we work</a>
         <a href="#projects">Projects</a>
         <a href="#contact">Contact</a>
       </nav>
-      <p class="footer-legal">© <span id="year">2026</span> S&amp;S Remodels LLC. All rights reserved.</p>
+      <div class="footer-legal">
+        <p class="proud">
+          <svg class="flag" viewBox="0 0 38 20" width="30" height="16" aria-hidden="true" focusable="false">
+            <rect width="38" height="20" fill="#b22234"/>
+            <g fill="#fff"><rect y="1.54" width="38" height="1.54"/><rect y="4.62" width="38" height="1.54"/><rect y="7.69" width="38" height="1.54"/><rect y="10.77" width="38" height="1.54"/><rect y="13.85" width="38" height="1.54"/><rect y="16.92" width="38" height="1.54"/></g>
+            <rect width="15.2" height="10.77" fill="#3c3b6e"/>
+          </svg>
+          Proudly American. Locally owned in Spokane, WA.
+        </p>
+        <p>© <span id="year">2026</span> S&amp;S Remodels LLC. All rights reserved.</p>
+      </div>
     </div>
   </footer>
 
