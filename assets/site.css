@@ -98,13 +98,11 @@ body { margin: 0; background: var(--earth-timber); }
 }
 @media (max-width: 400px) { .header-brand img { height: 36px; } }
 
-/* ---------- hero: static waterfall ---------- */
-.hero {
-  position: relative;
-  padding-block: clamp(2rem, 6vw, 5rem) clamp(3rem, 8vw, 6.5rem);
-  color: #fff;
+/* ---------- fixed waterfall backdrop: the page scrolls over it ----------
+   A fixed layer instead of background-attachment:fixed, which iOS Safari ignores. */
+.backdrop {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
   background-color: var(--earth-timber);
-  /* earth-toned shade over the photo: keeps white text readable and warms the greens */
   background-image:
     linear-gradient(180deg, rgb(42 33 26 / 55%) 0%, rgb(42 33 26 / 35%) 40%, rgb(42 33 26 / 80%) 100%),
     url("hero-falls-sm.jpg");
@@ -112,20 +110,30 @@ body { margin: 0; background: var(--earth-timber); }
   background-position: center 40%;
 }
 @media (min-width: 901px) {
-  .hero {
-    background-image:
+  .backdrop { background-image:
       linear-gradient(180deg, rgb(42 33 26 / 55%) 0%, rgb(42 33 26 / 35%) 40%, rgb(42 33 26 / 80%) 100%),
-      url("hero-falls.jpg");
-  }
+      url("hero-falls.jpg"); }
+}
+@media (min-width: 1000px) {
+  .backdrop { background-position: 60% 55%; background-image:
+      linear-gradient(90deg, rgb(42 33 26 / 85%) 0%, rgb(42 33 26 / 60%) 38%, rgb(42 33 26 / 10%) 62%, rgb(42 33 26 / 45%) 100%),
+      url("hero-falls.jpg"); }
+}
+.site > header, .site > main, .site > footer { position: relative; z-index: 1; }
+.site > header { z-index: 50; }
+
+/* hero is transparent: the waterfall shows through it */
+.hero {
+  position: relative;
+  padding-block: clamp(2rem, 6vw, 5rem) clamp(3rem, 8vw, 6.5rem);
+  color: #fff;
+  background: transparent;
 }
 .hero-inner { text-align: center; }
 .hero-col { display: grid; justify-items: center; }
 /* Desktop: content on the left, waterfall left open on the right */
 @media (min-width: 1000px) {
-  .hero { background-position: 60% 55%; min-height: min(82vh, 52rem); display: flex; align-items: center; }
-  .hero, .hero.hero { background-image:
-      linear-gradient(90deg, rgb(42 33 26 / 85%) 0%, rgb(42 33 26 / 60%) 38%, rgb(42 33 26 / 10%) 62%, rgb(42 33 26 / 45%) 100%),
-      url("hero-falls.jpg"); }
+  .hero { min-height: min(82vh, 52rem); display: flex; align-items: center; }
   .hero-inner { text-align: left; }
   .hero-col { justify-items: start; max-width: 36rem; }
   .hero-col .plaque { width: min(100%, 28rem); }
@@ -351,3 +359,11 @@ body { margin: 0; background: var(--earth-timber); }
 }
 .fab-btn span { white-space: nowrap; }
 @media (max-width: 560px) { .fab-btn { font-size: .95rem; gap: .4rem; } }
+
+/* ---------- sections over the backdrop ---------- */
+/* light sections stay solid for easy reading; dark ones let the falls show through */
+.proof { background: rgb(47 74 44 / 88%); }
+.ss-section.timber { background: rgb(42 33 26 / 80%); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+.site-footer { background: rgb(42 33 26 / 90%); }
+/* a clear "window" between light sections so the waterfall reappears as you scroll */
+.falls-window { height: clamp(10rem, 30vh, 18rem); }
