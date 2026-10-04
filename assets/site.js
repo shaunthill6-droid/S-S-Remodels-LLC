@@ -1,4 +1,4 @@
-// S&S Remodels LLC — small progressive enhancements. Site works without JS.
+// S&S Remodels LLC: small progressive enhancements. Site works without JS.
 (function () {
   'use strict';
 
@@ -64,7 +64,7 @@
   function showSent() {
     form.classList.add('is-sent');
     status.className = 'form-status is-success';
-    status.textContent = 'Thanks — we got it. We\'ll be in touch soon.';
+    status.textContent = 'Thanks, we got it. We\'ll be in touch soon.';
   }
 
   // Back from the form service with ?sent=1 → show the thank-you state.
