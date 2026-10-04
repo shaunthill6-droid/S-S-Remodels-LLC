@@ -31,10 +31,9 @@ coverage area beyond "Spokane, WA and the surrounding area". Fill these in to la
   the mark's warm gray; the S's are the real lettering, not a font.
 - A transparent-background or vector logo does **not** exist yet. If one is needed (dark header,
   print, signage) it has to be produced separately — the raster must not be redrawn or blended.
-- `assets/hero-falls.jpg` / `hero-falls-sm.jpg` — hero background. "Olympic National Park, 2023 - 120"
-  (Sol Duc Falls) by Ryan Elwell, CC BY 2.0 — https://commons.wikimedia.org/wiki/File:Olympic_National_Park,_2023_-_120.jpg
-  Warm-graded and resized. **Attribution is required by the license** and is shown in the hero corner;
-  keep it unless the photo is replaced with one he owns.
+- `assets/hero-falls.jpg` / `hero-falls-sm.jpg` — hero background: forest waterfall image supplied
+  by the owner's side (2026-10-04), 1672×941. Replaced the earlier CC BY Sol Duc Falls photo, so no
+  photo credit is needed on the page.
 
 ## Wording on the site that the owner should confirm
 - "Proudly American. Locally owned in Spokane, WA." (footer)

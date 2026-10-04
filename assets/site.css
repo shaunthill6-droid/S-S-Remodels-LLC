@@ -122,7 +122,7 @@ body { margin: 0; background: var(--earth-timber); }
 .hero-col { display: grid; justify-items: center; }
 /* Desktop: content on the left, waterfall left open on the right */
 @media (min-width: 1000px) {
-  .hero { background-position: 0% 60%; min-height: min(82vh, 52rem); display: flex; align-items: center; }
+  .hero { background-position: 60% 55%; min-height: min(82vh, 52rem); display: flex; align-items: center; }
   .hero, .hero.hero { background-image:
       linear-gradient(90deg, rgb(42 33 26 / 85%) 0%, rgb(42 33 26 / 60%) 38%, rgb(42 33 26 / 10%) 62%, rgb(42 33 26 / 45%) 100%),
       url("hero-falls.jpg"); }
