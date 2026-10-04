@@ -4,19 +4,20 @@ Nothing on the site claims a license, review, award, years in business, address 
 coverage area beyond "Spokane, WA and the surrounding area". Fill these in to launch.
 
 ## Must have before launch
-- [ ] **Phone number** → `index.html` contact section (`data-placeholder="phone"`)
-- [ ] **Email address** → `index.html` contact section (`data-placeholder="email"`)
-- [ ] **Form destination** — the estimate form validates but posts nowhere.
-      Wire `action` to Formspree / Netlify Forms / Basin etc. (`assets/site.js`, `index.html`)
-- [ ] **Confirm the services list** (currently a draft): Kitchens · Bathrooms · Basements ·
-      Decks & outdoor · Additions · Whole-home remodels. Remove or add as needed.
-- [ ] **Project photos** — replace the six dashed "coming soon" tiles in `#projects`.
+- [x] **Phone number** — (509) 200-3095 (2026-10-04)
+- [x] **Email address** — shaun@ssremodelz.com on the site. ⚠️ Needs Namecheap email
+      forwarding → shaunthill6@gmail.com or mail to it bounces.
+- [x] **Form destination** — FormSubmit → shaunthill6@gmail.com. ⚠️ First submission triggers a
+      one-time ACTIVATE email to that inbox; nothing arrives until it is clicked.
+- [x] **Services** (owner, 2026-10-04): exteriors except roofs · flooring · basement finishes · demolition.
+- [ ] **Project photos** — replace the four dashed "coming soon" tiles in `#projects`.
 
 ## Should have
-- [ ] WA contractor license number (and "licensed, bonded & insured" if true) → footer
+- [ ] WA contractor license number (and "licensed, bonded & insured" if true) → footer.
+      LLC filed 2026-10-04; no number yet. Nothing on the site claims licensing.
 - [ ] Service area detail — which towns / counties around Spokane
 - [ ] A photo of the owner / crew for an "About" section
-- [ ] Domain name + hosting (GitHub Pages works for this static site)
+- [x] Domain + hosting — ssremodelz.com on GitHub Pages (live 2026-10-04)
 
 ## Assets
 - `assets/ss-remodels-approved.png` — approved logo, untouched, 1536×1024, opaque white.

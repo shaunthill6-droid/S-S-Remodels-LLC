@@ -61,18 +61,28 @@
     el.addEventListener('input', function () { setError(el, false); });
   });
 
+  function showSent() {
+    form.classList.add('is-sent');
+    status.className = 'form-status is-success';
+    status.textContent = 'Thanks — we got it. We will be in touch within one business day.';
+  }
+
+  // Back from the form service with ?sent=1 → show the thank-you state.
+  if (/[?&]sent=1/.test(window.location.search)) {
+    showSent();
+    if (window.history.replaceState) window.history.replaceState(null, '', window.location.pathname + '#contact');
+  }
+
   form.addEventListener('submit', function (e) {
-    e.preventDefault();
     status.className = 'form-status';
     status.textContent = '';
     if (!validate()) {
+      e.preventDefault();
       status.className = 'form-status is-error';
       status.textContent = 'Please fix the highlighted fields.';
       return;
     }
-    // TODO: POST to a form endpoint. Until then, show the success state locally.
-    form.classList.add('is-sent');
-    status.className = 'form-status is-success';
-    status.textContent = 'Thanks — we got it. We will be in touch within one business day.';
+    // valid → the browser posts to the form service, which redirects back with ?sent=1
+    form.querySelector('.form-submit').disabled = true;
   });
 })();

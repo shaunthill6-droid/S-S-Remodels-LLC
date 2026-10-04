@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>S&amp;S Remodels LLC — Solutions, Simplified | Spokane, WA</title>
-  <meta name="description" content="Solutions, Simplified. S&amp;S Remodels LLC is a residential remodeling contractor in Spokane, WA. Kitchens, bathrooms, basements and more — built right, built to last.">
+  <meta name="description" content="Solutions, Simplified. S&amp;S Remodels LLC is a residential remodeling contractor in Spokane, WA. Exteriors, flooring, basement finishes and demolition — built right, built to last.">
   <meta property="og:title" content="S&amp;S Remodels LLC — Solutions, Simplified">
   <meta property="og:description" content="Residential remodeling in Spokane, WA. Built right, built to last.">
   <link rel="canonical" href="https://ssremodelz.com/">
@@ -59,7 +59,7 @@
         <p class="ss-eyebrow">Residential remodeling · Spokane</p>
         <h1 class="ss-heading hero-heading">Built right.<br>Built to last.</h1>
         <p class="ss-copy hero-copy">
-          Kitchens, bathrooms, basements and the projects in between — done by a crew that
+          Exteriors, flooring, basement finishes and demolition — done by a crew that
           shows up when it says it will, tells you straight what the job takes, and leaves your
           home cleaner than it found it.
         </p>
@@ -78,35 +78,26 @@
           <h2 class="ss-heading">Remodeling, start to finish.</h2>
           <p class="ss-copy">
             One crew, one point of contact, one written plan. From the first walkthrough to the
-            final coat of paint, you know who is in your home and what happens next.
+            final clean-up, you know who is on your property and what happens next.
           </p>
         </div>
 
-        <!-- TODO (owner): confirm this list matches the services S&S actually offers. See CONTENT.md. -->
         <ul class="card-grid" role="list">
           <li class="ss-card service-card">
-            <h3>Kitchens</h3>
-            <p>Cabinets, counters, layouts and lighting — the room your family actually lives in, built to take daily use.</p>
+            <h3>Exteriors</h3>
+            <p>Siding, windows, doors, trim, decks and porches — the outside of the house, built to stand up to Spokane winters. We don't do roofs.</p>
           </li>
           <li class="ss-card service-card">
-            <h3>Bathrooms</h3>
-            <p>Tile, tubs, showers and vanities. Waterproofed properly so it looks this good in ten years, not just on day one.</p>
+            <h3>Flooring</h3>
+            <p>Hardwood, laminate, vinyl plank and tile. Old floors out, subfloor fixed, new floors laid flat and tight.</p>
           </li>
           <li class="ss-card service-card">
-            <h3>Basements</h3>
-            <p>Turn unfinished square footage into bedrooms, family rooms or a shop — framed, insulated and finished to code.</p>
+            <h3>Basement finishes</h3>
+            <p>Turn unfinished square footage into bedrooms, a family room or a shop — framed, insulated and finished to code.</p>
           </li>
           <li class="ss-card service-card">
-            <h3>Decks &amp; outdoor living</h3>
-            <p>Decks, covered patios and railings built for Spokane winters and summers alike.</p>
-          </li>
-          <li class="ss-card service-card">
-            <h3>Additions</h3>
-            <p>More room without moving. Additions and garages that match the house, not bolt onto it.</p>
-          </li>
-          <li class="ss-card service-card">
-            <h3>Whole-home remodels</h3>
-            <p>Bringing an older house up to how you live now — one scope, one schedule, one crew.</p>
+            <h3>Demolition</h3>
+            <p>Interior tear-outs, deck and shed removal, and site clean-up. Done safely, hauled away, swept clean.</p>
           </li>
         </ul>
       </div>
@@ -189,12 +180,10 @@
 
         <!-- TODO (owner): replace placeholders with real project photos. See CONTENT.md. -->
         <ul class="project-grid" role="list">
-          <li class="project-tile"><span>Kitchen — photos coming soon</span></li>
-          <li class="project-tile"><span>Bathroom — photos coming soon</span></li>
+          <li class="project-tile"><span>Exterior — photos coming soon</span></li>
+          <li class="project-tile"><span>Flooring — photos coming soon</span></li>
           <li class="project-tile"><span>Basement — photos coming soon</span></li>
-          <li class="project-tile"><span>Deck — photos coming soon</span></li>
-          <li class="project-tile"><span>Addition — photos coming soon</span></li>
-          <li class="project-tile"><span>Whole home — photos coming soon</span></li>
+          <li class="project-tile"><span>Demolition — photos coming soon</span></li>
         </ul>
       </div>
     </section>
@@ -215,21 +204,25 @@
               <dt>Service area</dt>
               <dd>Spokane, WA and the surrounding area</dd>
             </div>
-            <!-- TODO (owner): phone and email are placeholders until supplied. See CONTENT.md. -->
             <div>
               <dt>Phone</dt>
-              <dd><a class="ss-link" href="tel:" data-placeholder="phone">Number coming soon</a></dd>
+              <dd><a class="ss-link" href="tel:+15092003095">(509) 200-3095</a> — call or text</dd>
             </div>
             <div>
               <dt>Email</dt>
-              <dd><a class="ss-link" href="mailto:" data-placeholder="email">Email coming soon</a></dd>
+              <dd><a class="ss-link" href="mailto:shaun@ssremodelz.com">shaun@ssremodelz.com</a></dd>
             </div>
           </dl>
         </div>
 
-        <!-- NOTE: no backend yet. The form validates client-side and shows a success panel;
-             wire `action` to a form endpoint (Formspree, Netlify, etc.) before launch. -->
-        <form class="ss-card contact-form" id="estimate-form" action="#" method="post" novalidate>
+        <!-- Form delivery: FormSubmit (formsubmit.co) — no account; the first submission sends a
+             one-time activation email to the inbox below. After activation, every request lands there. -->
+        <form class="ss-card contact-form" id="estimate-form" action="https://formsubmit.co/shaunthill6@gmail.com" method="post" novalidate>
+          <input type="hidden" name="_subject" value="New estimate request — ssremodelz.com">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_next" value="https://ssremodelz.com/?sent=1#contact">
+          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
           <div class="field">
             <label for="f-name">Name</label>
             <input class="ss-input" id="f-name" name="name" type="text" autocomplete="name" required>
@@ -253,12 +246,10 @@
             <label for="f-type">Project type</label>
             <select class="ss-input" id="f-type" name="project_type">
               <option value="">Choose one</option>
-              <option>Kitchen</option>
-              <option>Bathroom</option>
-              <option>Basement</option>
-              <option>Deck / outdoor</option>
-              <option>Addition</option>
-              <option>Whole-home remodel</option>
+              <option>Exterior (siding, windows, doors, deck)</option>
+              <option>Flooring</option>
+              <option>Basement finish</option>
+              <option>Demolition</option>
               <option>Something else</option>
             </select>
           </div>
