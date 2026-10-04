@@ -22,5 +22,9 @@ coverage area beyond "Spokane, WA and the surrounding area". Fill these in to la
 - `assets/ss-remodels-approved.png` — approved logo, untouched, 1536×1024, opaque white.
 - `assets/ss-logo-trimmed.png` — deterministic whitespace trim of the above (content bbox + 24px),
   1520×699, used in the header and footer. Every visible part of the mark is preserved.
+- `assets/tag-s.png` — the left "S" of the approved mark, cut out as a transparent PNG (453×254)
+  by colour-keying the charcoal + emerald chrome pixels. Used as the two leading S's in the
+  tagline **Solutions, Simplified** (hero + footer). The rest of the tagline is site type in
+  the mark's warm gray; the S's are the real lettering, not a font.
 - A transparent-background or vector logo does **not** exist yet. If one is needed (dark header,
   print, signage) it has to be produced separately — the raster must not be redrawn or blended.

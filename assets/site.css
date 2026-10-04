@@ -77,6 +77,33 @@ body { margin: 0; }
   .header-brand img { height: 36px; }
 }
 
+/* ---------- tagline: "Solutions, Simplified" with the logo's own S ---------- */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.tagline {
+  margin: 0 0 1.25rem;
+  font-family: var(--ss-heading-font);
+  font-weight: 700;
+  font-size: clamp(1.15rem, 2.6vw, 1.75rem);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ss-gray);                 /* same warm gray as REMODELS LLC in the mark */
+  line-height: 1.3;
+}
+.tagline-word { white-space: nowrap; }   /* each word stays whole; the two may stack on narrow screens */
+.site .tagline-s {                       /* .site beats the generic `.site img { height: auto }` rule */
+  display: inline-block;
+  height: .92em;                         /* S glyph sits at cap height; width follows its own ratio */
+  width: auto;
+  max-width: none;
+  vertical-align: -.06em;                /* chrome streak dips just under the baseline, as in the mark */
+  margin-right: .04em;
+}
+.tagline--small { font-size: .95rem; margin: .75rem 0 0; }
+@media (max-width: 400px) { .tagline { font-size: 1.05rem; letter-spacing: .1em; } }
+
 /* ---------- hero ---------- */
 .hero { padding-top: clamp(1.5rem, 4vw, 3rem); }
 .hero-inner { text-align: center; }
