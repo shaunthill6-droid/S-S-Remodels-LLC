@@ -5,8 +5,8 @@ coverage area beyond "Spokane, WA and the surrounding area". Fill these in to la
 
 ## Must have before launch
 - [x] **Phone number** — (509) 200-3095 (2026-10-04)
-- [x] **Email address** — shaun@ssremodelz.com on the site. ⚠️ Needs Namecheap email
-      forwarding → shaunthill6@gmail.com or mail to it bounces.
+- [x] **Email address** — shaun@ssremodelz.com, Namecheap forwarder → shaunthill6@gmail.com
+      (tested working 2026-10-03 ~11pm PT).
 - [x] **Form destination** — FormSubmit → shaunthill6@gmail.com. ⚠️ First submission triggers a
       one-time ACTIVATE email to that inbox; nothing arrives until it is clicked.
 - [x] **Services** (owner, 2026-10-04): exteriors except roofs · flooring · basement finishes · demolition.
