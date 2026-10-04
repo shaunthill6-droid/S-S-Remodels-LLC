@@ -36,10 +36,17 @@ Owner's instruction: *this is how he wants his brand built.*
 - **Family / Provider** — 3 · **Legacy** — 2 · **Discipline** — 2 · **Faith** — 1
 - **Deals / Wealth / Real Estate / Finance** — present throughout
 
-## Open questions (not decided — ask the owner)
+## Status (settled 2026-10-03)
 
-- **Name mismatch:** the logo reads **"ST"**, the repo/business is **S&S Remodels LLC**. Personal brand
-  or the remodeling company? Same brand or two?
-- **No remodeling content on the board** — no tools, homes, or before/after. The board is about
-  entrepreneurship, real estate and wealth. How much of that goes on a remodeling site?
-- Real logo file, exact brand colors, photos of the owner and of completed work: not yet supplied.
+- **"ST" is the owner's PERSONAL brand, not S&S Remodels LLC.** The board is a reference for
+  his personal look, tone and values. It is **not** the S&S logo or the S&S brand.
+- **This repo's only job is the S&S Remodels LLC website.** Use the board for feel only
+  (rugged, outdoor, black + green, hand-lettered, "built different"); do not put the ST
+  monogram or the wealth / deals / real-estate messaging on the S&S site.
+
+## Still needed for the S&S site
+
+- S&S logo (or go-ahead to design a wordmark) and exact colors
+- Services offered, service area, license / insurance details
+- Phone, email, how customers should request a quote
+- Photos of completed jobs (before/after if available)
