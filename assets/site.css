@@ -376,3 +376,6 @@ body { margin: 0; background: var(--earth-timber); }
   .fab-btn { font-size: .88rem; padding: 0 .55rem; gap: .3rem; }
   .fab-btn svg { width: 17px; height: 17px; }
 }
+
+.legal-link { color: #fff; text-underline-offset: .2em; }
+.legal-link:hover { color: var(--earth-tan); }

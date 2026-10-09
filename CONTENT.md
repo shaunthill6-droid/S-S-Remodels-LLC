@@ -1,6 +1,6 @@
 # Content checklist — what the owner still needs to supply
 
-Nothing on the site claims a license, review, award, years in business, address or
+Nothing on the site claims a review, award, address or
 coverage area beyond "Spokane, WA and the surrounding area". Fill these in to launch.
 
 ## Must have before launch
@@ -15,8 +15,9 @@ coverage area beyond "Spokane, WA and the surrounding area". Fill these in to la
 - [ ] **Project photos** — replace the three dashed "coming soon" tiles in `#projects`.
 
 ## Should have
-- [ ] WA contractor license number (and "licensed, bonded & insured" if true) → footer.
-      LLC filed 2026-10-04; no number yet. Nothing on the site claims licensing.
+- [x] WA contractor license: SSREMRL741PZ, "licensed, bonded and insured" (owner, 2026-10-09). Shown in the proof strip,
+      contact section and footer, with a link to https://secure.lni.wa.gov/verify/ (Labor & Industries lookup).
+      The site states this as fact: keep the bond and insurance current, and re-check the number at the lookup.
 - [ ] Service area detail — which towns / counties around Spokane
 - [ ] A photo of the owner / crew for an "About" section
 - [x] Domain + hosting: ssremodelz.com on GitHub Pages, HTTPS enforced (2026-10-04)
