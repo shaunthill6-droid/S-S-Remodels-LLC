@@ -17,3 +17,6 @@
 - Minimum printed size: contact code 1 inch (25 mm) square, website code 0.75 inch (19 mm).
 - Generated 2026-10-08 with segno. Both decode back to their exact contents, including the PDFs rendered at 300 DPI at their printed size.
 - At minimum size a single square in the code measures 0.42 mm (contact) and 0.51 mm (website).
+
+## Business cards
+Five front/back designs with the logo, his info and both QR codes: see `cards/README.md`.
