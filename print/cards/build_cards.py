@@ -12,7 +12,7 @@ OUT = os.path.join(HERE, "html")
 os.makedirs(OUT, exist_ok=True)
 
 NAME, ROLE = "Shaun Thill", "Owner"
-PHONE, EMAIL, WEB, LOC = "(509) 200-3095", "shaun@ssremodelz.com", "ssremodelz.com", "Spokane, WA"
+PHONE, EMAIL, WEB, LOC = "(509) 828-7088", "shaun@ssremodelz.com", "ssremodelz.com", "Spokane, WA"
 
 LOGO = "../../../assets/ss-logo-trimmed.png"     # 1520 x 699, near-white background (RGB 253)
 LOGO_RATIO = 699 / 1520

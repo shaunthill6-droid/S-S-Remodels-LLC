@@ -2,7 +2,7 @@
 
 | File | Scans to | Use |
 |---|---|---|
-| `qr-save-contact.pdf` / `.png` / `.svg` | Contact card: Shaun Thill, S&S Remodels LLC, (509) 200-3095, shaun@ssremodelz.com, ssremodelz.com | "Scan to save my contact" |
+| `qr-save-contact.pdf` / `.png` / `.svg` | Contact card: Shaun Thill, S&S Remodels LLC, (509) 828-7088, shaun@ssremodelz.com, ssremodelz.com | "Scan to save my contact" |
 | `qr-website.pdf` / `.png` / `.svg` | https://ssremodelz.com | "Scan to visit our website" |
 | `qr-preview.png` | Both, labelled | Preview only, not for print |
 
