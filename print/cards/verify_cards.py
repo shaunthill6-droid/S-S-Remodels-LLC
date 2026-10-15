@@ -15,7 +15,7 @@ PNG = os.path.join(HERE, "preview")
 os.makedirs(PNG, exist_ok=True)
 
 VCARD = "\n".join(["BEGIN:VCARD", "VERSION:3.0", "N:Thill;Shaun", "FN:Shaun Thill", "ORG:S&S Remodels LLC",
-                   "TEL;TYPE=WORK:+15098287088", "EMAIL:shaun@ssremodelz.com", "URL:https://ssremodelz.com", "END:VCARD"])
+                   "TEL;TYPE=CELL:+15092003095", "EMAIL:shaun@ssremodelz.com", "URL:https://ssremodelz.com", "END:VCARD"])
 SITE = "https://ssremodelz.com"
 EXPECT = {"d1-back": {VCARD, SITE}, "d2-back": {VCARD, SITE}, "d3-back": {VCARD, SITE}, "d4-back": {VCARD, SITE},
           "d5-front": {VCARD}, "d5-back": {SITE}}

@@ -25,4 +25,4 @@ NODE_PATH=$(npm root -g) node render_cards.js      # writes pdf/faces/, checks s
 python3 -I verify_cards.py                         # decodes QR codes, merges pages, writes cards-preview.png
 ```
 `preview/guides-review.png` shows trim (green) and safe area (red) over every face. Fonts: Barlow, Barlow Condensed (SIL OFL), see `fonts/LICENSE.txt`.
-Content: Shaun Thill, Owner (title not yet confirmed by him), (509) 828-7088, shaun@ssremodelz.com, ssremodelz.com, Spokane, WA.
+Content: Shaun Thill, Owner (title not yet confirmed by him), (509) 200-3095, shaun@ssremodelz.com, ssremodelz.com, Spokane, WA.

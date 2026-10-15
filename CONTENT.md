@@ -4,7 +4,7 @@ Nothing on the site claims a review, award, address or
 coverage area beyond "Spokane, WA and the surrounding area". Fill these in to launch.
 
 ## Must have before launch
-- [x] **Phone number** — (509) 828-7088, business line (2026-10-15; replaced his personal number)
+- [x] **Phone number** — (509) 200-3095 (2026-10-04)
 - [x] **Email address** — shaun@ssremodelz.com, Namecheap forwarder → shaunthill6@gmail.com
       (tested working 2026-10-03 ~11pm PT).
 - [x] **Form destination** — FormSubmit → shaunthill6@gmail.com. ⚠️ First submission triggers a
