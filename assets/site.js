@@ -29,6 +29,23 @@
   var year = document.getElementById('year');
   if (year) year.textContent = String(new Date().getFullYear());
 
+  // ---- photo viewer: enlarge project photos in a dialog (links still work without it)
+  var box = document.getElementById('lightbox');
+  if (box && typeof box.showModal === 'function') {
+    var boxImg = box.querySelector('img');
+    document.querySelectorAll('.photo-link').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        var thumb = link.querySelector('img');
+        boxImg.src = link.getAttribute('href');
+        boxImg.alt = thumb ? thumb.alt : '';
+        box.showModal();
+      });
+    });
+    box.addEventListener('click', function () { box.close(); });
+    box.addEventListener('close', function () { boxImg.removeAttribute('src'); });
+  }
+
   // ---- estimate form (client-side validation; no backend wired yet) ----
   var form = document.getElementById('estimate-form');
   if (!form) return;

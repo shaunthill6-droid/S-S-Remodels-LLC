@@ -265,12 +265,42 @@ body { margin: 0; background: var(--earth-timber); }
 .step p { margin: 0; color: var(--ss-gray); }
 
 /* projects */
-.project-grid { grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
-.project-tile {
-  aspect-ratio: 4 / 3;
-  display: grid; place-items: center;
-  border: 1px dashed var(--earth-khaki); border-radius: 6px;
-  background: #fbf8f2; color: var(--earth-brown); font-size: .9rem; text-align: center; padding: 1rem;
+.project-group + .project-group { margin-top: clamp(1.75rem, 4vw, 2.75rem); }
+.project-title {
+  margin: 0 0 .75rem; font-size: 1.05rem; font-weight: 800; letter-spacing: .02em;
+  padding-left: .7rem; border-left: 4px solid var(--earth-forest);
+}
+.photo-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: .75rem; grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 640px) { .photo-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1000px) { .photo-grid { grid-template-columns: repeat(4, 1fr); gap: 1rem; } }
+.photo { margin: 0; position: relative; }
+.photo-link { display: block; border-radius: 6px; overflow: hidden; background: var(--earth-tan); }
+.site .photo-link img {
+  display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover;
+  transition: transform 200ms ease;
+}
+.photo-link:hover img { transform: scale(1.03); }
+.photo-link:focus-visible { outline: 3px solid var(--earth-forest); outline-offset: 3px; }
+.photo figcaption {
+  position: absolute; left: .5rem; bottom: .5rem;
+  padding: .2rem .55rem; border-radius: 3px;
+  background: rgb(42 33 26 / 82%); color: #fff;
+  font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) { .site .photo-link img { transition: none; } .photo-link:hover img { transform: none; } }
+
+/* photo viewer */
+.lightbox { padding: 0; border: 0; background: transparent; max-width: 96vw; max-height: 94vh; overflow: visible; }
+.lightbox::backdrop { background: rgb(20 16 12 / 90%); }
+.lightbox img { display: block; max-width: 96vw; max-height: 86vh; width: auto; height: auto; border-radius: 4px; }
+.lightbox-close {
+  display: block; margin: 0 0 .5rem auto; min-height: 44px; padding: .5rem 1rem;
+  border: 2px solid #fff; border-radius: 999px; background: transparent; color: #fff;
+  font: 700 .95rem/1 var(--ss-body-font); cursor: pointer;
 }
 
 /* ---------- contact ---------- */

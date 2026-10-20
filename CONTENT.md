@@ -12,7 +12,10 @@ coverage area beyond "Spokane, WA and the surrounding area". Fill these in to la
 - [x] **Services** (owner, 2026-10-04): generalist — "a little of everything". Examples shown, not a
       fixed menu: exterior repairs (no roofs) · flooring · basement finishes · demolition · home repairs.
 - [x] **Experience** (owner, 2026-10-04): "20 years in residential home service and repairs".
-- [ ] **Project photos** — replace the three dashed "coming soon" tiles in `#projects`.
+- [x] **Project photos** (2026-10-20, Drive folder "Shaun Thill/Work pics", 39 files = 32 unique): 12 on the site
+      in `assets/work/` (600px + 1200px, metadata stripped), grouped Bathrooms / Basement finishing / Flooring /
+      Exterior siding. Left out: photos showing people, a child's bedroom, kitchen shots with personal items,
+      and near-duplicate in-progress shots. Exterior shots checked: no readable house number or licence plate.
 
 ## Should have
 - [x] WA contractor license: SSREMRL741PZ, "licensed, bonded and insured" (owner, 2026-10-09). Shown in the proof strip,
