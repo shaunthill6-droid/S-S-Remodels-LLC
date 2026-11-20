@@ -26,6 +26,13 @@ body{background:var(--timber);color:var(--ink);font-family:"Barlow",system-ui,-a
 .hint{font-size:12.5px;color:rgba(243,237,226,.7);text-align:center}
 .hint.go{color:#9fe0c0;font-weight:600}
 
+/* opened inside Facebook, Messenger and the like */
+.inapp{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--tan);color:var(--timber);font-size:14px;line-height:1.35;font-weight:600}
+.inapp span{flex:1;min-width:0}
+.inapp button{flex-shrink:0;min-height:40px;padding:0 14px;border:0;border-radius:4px;background:var(--timber);color:var(--sand);font:600 12px/1 "Barlow",sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.inapp .shut{background:transparent;color:var(--timber);font-size:18px;padding:0 6px;min-height:40px}
+body.pdfing .inapp{display:none}
+
 /* the page */
 .sheet{position:relative;background:var(--paper);width:8.5in;max-width:100%;min-height:11in;margin:18px auto 40px;padding:.55in .6in .45in;box-shadow:0 12px 40px rgba(0,0,0,.45);font-size:11pt;line-height:1.45;overflow:hidden}
 .band{position:absolute;left:0;right:0;top:0;height:6px;background:linear-gradient(90deg,#003d2d 0%,#00704a 28%,#008f5a 50%,#00704a 72%,#003d2d 100%)}
@@ -138,7 +145,7 @@ body.pdfing .skip,body.pdfing .blank,body.pdfing .item.blank,body.pdfing .stamp.
 @media print{
   @page{size:letter;margin:.4in 0}
   body{background:#fff}
-  .bar{display:none}
+  .bar,.inapp{display:none}
   .sheet{width:auto;max-width:none;min-height:0;margin:0;box-shadow:none;padding:0 .6in}
   .band{display:none}
   [contenteditable]{border-bottom-color:transparent;background:none}

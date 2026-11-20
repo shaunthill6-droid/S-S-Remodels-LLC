@@ -417,6 +417,32 @@
     ['sigShaun', 'sigCust'].forEach(initSig);
   }
 
+  /* opened inside Facebook, Messenger, Instagram and the like: point to the real browser,
+     where Send PDF, contacts and Add to Home screen work */
+  if (INAPP) {
+    var url = location.origin + '/receipt.html';
+    var android = /Android/i.test(navigator.userAgent || '');
+    var box = document.createElement('div'); box.className = 'inapp'; box.setAttribute('role', 'alert');
+    var msg = document.createElement('span');
+    msg.textContent = android ? 'Open this in Chrome for Send PDF, contacts and the home screen icon.' : 'Open this in your browser for Send PDF and contacts.';
+    var go = document.createElement('button'); go.type = 'button';
+    go.textContent = android ? 'Open in Chrome' : 'Copy link';
+    var shut = document.createElement('button'); shut.type = 'button'; shut.className = 'shut'; shut.setAttribute('aria-label', 'Dismiss'); shut.textContent = '✕';
+    go.addEventListener('click', function () {
+      if (android) {
+        location.href = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+        setTimeout(function () { msg.textContent = 'If Chrome did not open: tap the menu (three dots), then Open in browser.'; }, 1200);
+        return;
+      }
+      var done = function () { go.textContent = 'Copied'; msg.textContent = 'Paste the link in your browser. Or tap the menu, then Open in browser.'; };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, function () { msg.textContent = url; });
+      else msg.textContent = url;
+    });
+    shut.addEventListener('click', function () { box.remove(); });
+    box.appendChild(msg); box.appendChild(go); box.appendChild(shut);
+    document.body.insertBefore(box, document.body.firstChild);
+  }
+
   /* works offline once opened (job sites with no signal) */
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
     navigator.serviceWorker.register('/receipt-sw.js', { scope: '/receipt' }).catch(function () { /* fine */ });
