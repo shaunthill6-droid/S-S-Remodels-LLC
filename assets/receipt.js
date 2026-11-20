@@ -536,7 +536,7 @@
       var m = text.match(/SSRDATA1:([A-Za-z0-9+\/=]+):SSREND/);
       var doc = null;
       try { doc = m ? JSON.parse(b64dec(m[1])) : null; } catch (err) { doc = null; }
-      if (!doc) { window.alert('That PDF has no saved job in it. Only PDFs made with Send PDF can be opened.'); return; }
+      if (!doc) { window.alert('That PDF has no saved job in it. Only PDFs made with the Send PDF button can be opened.'); return; }
       openDoc(doc, true);
       dlg.close(); hint('Opened from ' + f.name + '.', true);
     };
