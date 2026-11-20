@@ -69,8 +69,7 @@
     if (typeof src.id === 'string') s.id = src.id.slice(0, 40);
     if (src.numManual) s.numManual = true;
     if (src.stampAuto === false) { s.stampAuto = false; s.stamp = !!src.stamp; }
-    if (src.rateAuto === true) { s.rateAuto = true; if (typeof src.taxLoc === 'string') s.taxLoc = src.taxLoc.slice(0, 60); }
-    if (src.rateAuto === false) s.rateAuto = false;
+    if (typeof src.taxArea === 'string') s.taxArea = src.taxArea.slice(0, 10);
     return s;
   }
   function hasContent(s) {
@@ -134,7 +133,6 @@
     $('#balRow').classList.toggle('skip', noPaid && mode === 'Estimate');
     $('#methodRow').classList.toggle('skip', !get('method'));
     if (state.stampAuto !== false) setStamp(total > 0 && bal === 0);
-    $('#taxLocTxt').textContent = (state.rateAuto && state.taxLoc && get('rate')) ? ' · ' + state.taxLoc : '';
     $('#svcSec').classList.toggle('blank', !get('svc'));
     $('#note').classList.toggle('blank', !get('note'));
     $('#terms').classList.toggle('blank', !get('terms'));
@@ -162,67 +160,54 @@
     if (m) setK('num', m[1]);
   }
 
-  /* sales tax from the job address: WA Department of Revenue's own lookup (its URL interface) */
-  var DOR = 'https://webgis.dor.wa.gov/webapi/AddressRates.aspx?output=xml';
-  var lookTimer = null, lookSeq = 0, lastLook = '';
-  function taxStatus(msg, offer) {
-    var el = $('#taxLook'); el.textContent = msg || ''; el.hidden = !msg;
-    if (offer) {
-      var b = document.createElement('button'); b.type = 'button'; b.className = 'usetax'; b.textContent = 'Use ' + offer.pct + '%';
-      b.addEventListener('click', function () { applyRate(offer); });
-      el.appendChild(document.createTextNode(' ')); el.appendChild(b);
-    }
+  /* sales tax: picked from Spokane County's rate sheet ("Spokane County Tax Rates", effective 01/01/2026).
+     Update this list when the county publishes new rates. [location code, area, combined rate %] */
+  var TAX_AREAS = [
+    ['3201', 'Airway Heights', '9.2'],
+    ['3202', 'Cheney', '8.9'],
+    ['3203', 'Deer Park', '8.1'],
+    ['3204', 'Fairfield', '8.1'],
+    ['3215', 'Kalispel Tribe - Airway Heights', '9.2'],
+    ['3205', 'Latah', '8.1'],
+    ['3212', 'Liberty Lake', '9.0'],
+    ['3206', 'Medical Lake', '8.9'],
+    ['3207', 'Millwood', '8.9'],
+    ['3208', 'Rockford', '8.1'],
+    ['3209', 'Spangle', '8.1'],
+    ['3210', 'Spokane (City)', '9.1'],
+    ['3213', 'Spokane Valley', '9.0'],
+    ['3200', 'Unincorporated Areas', '8.1'],
+    ['3232', 'Unincorporated Areas - PTBA', '8.9'],
+    ['3211', 'Waverly', '8.1']
+  ];
+  function areaOf(code) { for (var i = 0; i < TAX_AREAS.length; i++) { if (TAX_AREAS[i][0] === code) return TAX_AREAS[i]; } return null; }
+  var taxSel = $('#taxArea'), rateEl = field('rate');
+  (function () {
+    function opt(v, t) { var o = document.createElement('option'); o.value = v; o.textContent = t; taxSel.appendChild(o); }
+    opt('', 'Pick the tax area');
+    TAX_AREAS.forEach(function (a) { opt(a[0], a[1] + ' · ' + a[2] + '%'); });
+    opt('other', 'Other rate (type it in)');
+    opt('none', 'No sales tax');
+  })();
+  function showTax() {
+    if (!state.taxArea && (state.rate || '').trim()) state.taxArea = 'other'; /* jobs saved before the menu */
+    var area = state.taxArea || '', a = areaOf(area);
+    if (!a && area !== 'other' && area !== 'none') area = '';
+    taxSel.value = area;
+    if (a) setK('rate', a[2]); else if (area !== 'other') setK('rate', '');
+    if (area === 'other') makePlain(rateEl); else rateEl.contentEditable = 'false';
+    $('#rateWrap').hidden = !(a || area === 'other');
+    $('#taxLocTxt').textContent = a ? ' · ' + a[1] : (area === 'none' ? 'Not taxed' : '');
   }
-  function niceName(n) {
-    return String(n || '').toLowerCase().replace(/\b[a-z]/g, function (c) { return c.toUpperCase(); }).replace(/\bPtba\b/, 'PTBA').replace(/\bRta\b/, 'RTA');
-  }
-  function applyRate(r) {
-    setK('rate', r.pct); state.rateAuto = true; state.taxLoc = r.name;
-    calc(); save();
-    taxStatus('Sales tax ' + r.pct + '% for ' + r.name + ' (location code ' + r.loc + '), from the WA Department of Revenue.' + (r.matched ? ' Matched ' + r.matched + '.' : ''));
-  }
-  function scheduleLookup() { clearTimeout(lookTimer); lookTimer = setTimeout(lookupTax, 1500); }
-  function lookupTax() {
-    clearTimeout(lookTimer);
-    var street = get('addr1'), line2 = get('addr2');
-    var zipM = line2.match(/\b(\d{5})(?:-\d{4})?\b/), zip = zipM ? zipM[1] : '';
-    var city = line2.split(',')[0].replace(/\b\d{5}(-\d{4})?\b/, '').trim();
-    if (!street || !/\d/.test(street) || (!zip && !city)) return;
-    var key = (street + '|' + city + '|' + zip).toLowerCase();
-    if (key === lastLook) return;
-    lastLook = key;
-    var seq = ++lookSeq;
-    taxStatus('Looking up the sales tax rate for this address…');
-    var url = DOR + '&addr=' + encodeURIComponent(street) + '&city=' + encodeURIComponent(city) + '&zip=' + encodeURIComponent(zip);
-    fetch(url).then(function (r) { if (!r.ok) throw new Error('http'); return r.text(); }).then(function (x) {
-      if (seq !== lookSeq) return;
-      var doc = new DOMParser().parseFromString(x, 'application/xml');
-      var resp = doc.querySelector('response'), rt = doc.querySelector('rate'), al = doc.querySelector('addressline');
-      var code = resp ? parseInt(resp.getAttribute('code'), 10) : 9;
-      var rate = resp ? parseFloat(resp.getAttribute('rate')) : NaN;
-      if (code >= 0 && code <= 4 && isFinite(rate) && rate > 0 && rate < 0.2) {
-        var r = {
-          pct: String(+(rate * 100).toFixed(3)),
-          name: niceName(rt ? rt.getAttribute('name') : '') || 'this address',
-          loc: resp.getAttribute('loccode') || '',
-          matched: code === 0 || !al ? '' : [al.getAttribute('houselow'), niceName(al.getAttribute('street')), al.getAttribute('zip')].filter(Boolean).join(' ')
-        };
-        if (state.rateAuto === false && get('rate') && num(get('rate')) !== num(r.pct)) {
-          taxStatus('The state lookup says ' + r.pct + '% for ' + r.name + '. You typed ' + get('rate') + '%.', r);
-        } else {
-          applyRate(r);
-        }
-      } else {
-        if (state.rateAuto !== false) { setK('rate', ''); state.rateAuto = undefined; state.taxLoc = ''; calc(); save(); }
-        taxStatus(code === 5
-          ? 'Could not match that street exactly, so the rate is blank. Check the street and ZIP, or look the rate up below.'
-          : 'The state lookup could not find that address, so the rate is blank. Check it, or look the rate up below.');
-      }
-    }).catch(function () {
-      if (seq !== lookSeq) return;
-      lastLook = '';
-      taxStatus('Could not reach the state tax lookup (no signal?). Check the rate, or it will try again when you edit the address.');
-    });
+  taxSel.addEventListener('change', function () {
+    state.taxArea = taxSel.value;
+    showTax(); calc(); save();
+    if (taxSel.value === 'other') rateEl.focus();
+  });
+  function taxOk() {
+    var sub = 0; items.forEach(function (it) { sub += cents(it.a); });
+    if (state.taxArea || sub <= 0) return true;
+    return window.confirm('No sales tax area is picked, so sales tax shows $0.00. Continue anyway?');
   }
 
   /* line items */
@@ -281,14 +266,11 @@
       fixEmpty(el);
       if (k === 'num') state.numManual = !!el.textContent.trim();
       if (k === 'addr1') numFromAddr();
-      if (k === 'rate') { state.rateAuto = false; state.taxLoc = ''; }
-      if (k === 'addr1' || k === 'addr2') scheduleLookup();
       calc(); save();
     });
     el.addEventListener('blur', function () {
       if (k === 'paid' && el.textContent.trim()) el.textContent = fmt(cents(el.textContent));
       if (k === 'rate' && el.textContent.trim()) el.textContent = String(+num(el.textContent).toFixed(3));
-      if (k === 'addr1' || k === 'addr2') lookupTax();
       calc(); save();
     });
     el.addEventListener('keydown', function (e) {
@@ -377,8 +359,7 @@
     state = { terms: terms, mode: mode, id: newId() };
     items = [{ d: '', a: '' }];
     setK('date', today());
-    lastLook = ''; taxStatus('');
-    renderItems(); applyMode(); setStamp(false); calc(); save();
+    renderItems(); applyMode(); showTax(); setStamp(false); calc(); save();
     clearSig('sigCust'); /* Shaun's own signature stays */
     window.scrollTo(0, 0);
   });
@@ -391,7 +372,6 @@
     if (c.street) setK('addr1', c.street);
     if (c.csz) setK('addr2', c.csz);
     numFromAddr(); calc(); save();
-    if (c.street) lookupTax();
     hint(c.name ? 'Added ' + c.name + '.' : 'No contact found.');
   }
   $('#btnContact').addEventListener('click', function () {
@@ -509,6 +489,7 @@
   }
   btnShare.addEventListener('click', function () {
     if (ready) { var f = ready; ready = null; btnShare.textContent = 'Send PDF'; send(f); return; }
+    if (!taxOk()) return;
     btnShare.disabled = true; btnShare.textContent = 'Building PDF…';
     makePdf().then(function (f) {
       btnShare.disabled = false; btnShare.textContent = 'Send PDF';
@@ -520,6 +501,7 @@
   });
   $('#btnPrint').addEventListener('click', function () {
     if (INAPP) { btnShare.click(); return; }
+    if (!taxOk()) return;
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     window.print();
   });
@@ -547,7 +529,7 @@
     F.forEach(function (el) { var k = el.dataset.k; if (k !== 'terms') el.textContent = s[k] || ''; });
     if (!s.date) setK('date', today());
     var stampWas = !!s.stamp;
-    renderItems(); applyMode();
+    renderItems(); applyMode(); showTax();
     setStamp(false);
     if (s.stampAuto === false) setStamp(stampWas);
     calc(); save(); storeJob();
@@ -621,6 +603,7 @@
     if (!state.date) setK('date', today());
     renderItems();
     applyMode();
+    showTax();
     if (state.stampAuto === false) setStamp(state.stamp);
     calc();
     ['sigShaun', 'sigCust'].forEach(initSig);
