@@ -69,6 +69,8 @@
     if (typeof src.id === 'string') s.id = src.id.slice(0, 40);
     if (src.numManual) s.numManual = true;
     if (src.stampAuto === false) { s.stampAuto = false; s.stamp = !!src.stamp; }
+    if (src.rateAuto === true) { s.rateAuto = true; if (typeof src.taxLoc === 'string') s.taxLoc = src.taxLoc.slice(0, 60); }
+    if (src.rateAuto === false) s.rateAuto = false;
     return s;
   }
   function hasContent(s) {
@@ -132,6 +134,7 @@
     $('#balRow').classList.toggle('skip', noPaid && mode === 'Estimate');
     $('#methodRow').classList.toggle('skip', !get('method'));
     if (state.stampAuto !== false) setStamp(total > 0 && bal === 0);
+    $('#taxLocTxt').textContent = (state.rateAuto && state.taxLoc && get('rate')) ? ' · ' + state.taxLoc : '';
     $('#svcSec').classList.toggle('blank', !get('svc'));
     $('#note').classList.toggle('blank', !get('note'));
     $('#terms').classList.toggle('blank', !get('terms'));
@@ -157,6 +160,69 @@
     if (state.numManual) return;
     var m = get('addr1').match(/^\s*(\d+)/);
     if (m) setK('num', m[1]);
+  }
+
+  /* sales tax from the job address: WA Department of Revenue's own lookup (its URL interface) */
+  var DOR = 'https://webgis.dor.wa.gov/webapi/AddressRates.aspx?output=xml';
+  var lookTimer = null, lookSeq = 0, lastLook = '';
+  function taxStatus(msg, offer) {
+    var el = $('#taxLook'); el.textContent = msg || ''; el.hidden = !msg;
+    if (offer) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'usetax'; b.textContent = 'Use ' + offer.pct + '%';
+      b.addEventListener('click', function () { applyRate(offer); });
+      el.appendChild(document.createTextNode(' ')); el.appendChild(b);
+    }
+  }
+  function niceName(n) {
+    return String(n || '').toLowerCase().replace(/\b[a-z]/g, function (c) { return c.toUpperCase(); }).replace(/\bPtba\b/, 'PTBA').replace(/\bRta\b/, 'RTA');
+  }
+  function applyRate(r) {
+    setK('rate', r.pct); state.rateAuto = true; state.taxLoc = r.name;
+    calc(); save();
+    taxStatus('Sales tax ' + r.pct + '% for ' + r.name + ' (location code ' + r.loc + '), from the WA Department of Revenue.' + (r.matched ? ' Matched ' + r.matched + '.' : ''));
+  }
+  function scheduleLookup() { clearTimeout(lookTimer); lookTimer = setTimeout(lookupTax, 1500); }
+  function lookupTax() {
+    clearTimeout(lookTimer);
+    var street = get('addr1'), line2 = get('addr2');
+    var zipM = line2.match(/\b(\d{5})(?:-\d{4})?\b/), zip = zipM ? zipM[1] : '';
+    var city = line2.split(',')[0].replace(/\b\d{5}(-\d{4})?\b/, '').trim();
+    if (!street || !/\d/.test(street) || (!zip && !city)) return;
+    var key = (street + '|' + city + '|' + zip).toLowerCase();
+    if (key === lastLook) return;
+    lastLook = key;
+    var seq = ++lookSeq;
+    taxStatus('Looking up the sales tax rate for this address…');
+    var url = DOR + '&addr=' + encodeURIComponent(street) + '&city=' + encodeURIComponent(city) + '&zip=' + encodeURIComponent(zip);
+    fetch(url).then(function (r) { if (!r.ok) throw new Error('http'); return r.text(); }).then(function (x) {
+      if (seq !== lookSeq) return;
+      var doc = new DOMParser().parseFromString(x, 'application/xml');
+      var resp = doc.querySelector('response'), rt = doc.querySelector('rate'), al = doc.querySelector('addressline');
+      var code = resp ? parseInt(resp.getAttribute('code'), 10) : 9;
+      var rate = resp ? parseFloat(resp.getAttribute('rate')) : NaN;
+      if (code >= 0 && code <= 4 && isFinite(rate) && rate > 0 && rate < 0.2) {
+        var r = {
+          pct: String(+(rate * 100).toFixed(3)),
+          name: niceName(rt ? rt.getAttribute('name') : '') || 'this address',
+          loc: resp.getAttribute('loccode') || '',
+          matched: code === 0 || !al ? '' : [al.getAttribute('houselow'), niceName(al.getAttribute('street')), al.getAttribute('zip')].filter(Boolean).join(' ')
+        };
+        if (state.rateAuto === false && get('rate') && num(get('rate')) !== num(r.pct)) {
+          taxStatus('The state lookup says ' + r.pct + '% for ' + r.name + '. You typed ' + get('rate') + '%.', r);
+        } else {
+          applyRate(r);
+        }
+      } else {
+        if (state.rateAuto !== false) { setK('rate', ''); state.rateAuto = undefined; state.taxLoc = ''; calc(); save(); }
+        taxStatus(code === 5
+          ? 'Could not match that street exactly, so the rate is blank. Check the street and ZIP, or look the rate up below.'
+          : 'The state lookup could not find that address, so the rate is blank. Check it, or look the rate up below.');
+      }
+    }).catch(function () {
+      if (seq !== lookSeq) return;
+      lastLook = '';
+      taxStatus('Could not reach the state tax lookup (no signal?). Check the rate, or it will try again when you edit the address.');
+    });
   }
 
   /* line items */
@@ -215,11 +281,14 @@
       fixEmpty(el);
       if (k === 'num') state.numManual = !!el.textContent.trim();
       if (k === 'addr1') numFromAddr();
+      if (k === 'rate') { state.rateAuto = false; state.taxLoc = ''; }
+      if (k === 'addr1' || k === 'addr2') scheduleLookup();
       calc(); save();
     });
     el.addEventListener('blur', function () {
       if (k === 'paid' && el.textContent.trim()) el.textContent = fmt(cents(el.textContent));
       if (k === 'rate' && el.textContent.trim()) el.textContent = String(+num(el.textContent).toFixed(3));
+      if (k === 'addr1' || k === 'addr2') lookupTax();
       calc(); save();
     });
     el.addEventListener('keydown', function (e) {
@@ -304,10 +373,11 @@
     if (!window.confirm('Start a new ' + mode.toLowerCase() + '?' + (kept ? ' The one on screen stays saved under Open.' : ''))) return;
     storeJob();
     var terms = state.terms;
-    F.forEach(function (el) { var k = el.dataset.k; if (k !== 'rate' && k !== 'terms') el.textContent = ''; });
+    F.forEach(function (el) { var k = el.dataset.k; if (k !== 'terms') el.textContent = ''; });
     state = { terms: terms, mode: mode, id: newId() };
     items = [{ d: '', a: '' }];
     setK('date', today());
+    lastLook = ''; taxStatus('');
     renderItems(); applyMode(); setStamp(false); calc(); save();
     clearSig('sigCust'); /* Shaun's own signature stays */
     window.scrollTo(0, 0);
@@ -321,6 +391,7 @@
     if (c.street) setK('addr1', c.street);
     if (c.csz) setK('addr2', c.csz);
     numFromAddr(); calc(); save();
+    if (c.street) lookupTax();
     hint(c.name ? 'Added ' + c.name + '.' : 'No contact found.');
   }
   $('#btnContact').addEventListener('click', function () {

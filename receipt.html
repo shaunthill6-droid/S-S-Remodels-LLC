@@ -65,6 +65,7 @@
       <div class="lbl">Job address</div>
       <div class="fld" contenteditable="true" data-k="addr1" data-ph="Street" enterkeyhint="next"></div>
       <div class="fld" contenteditable="true" data-k="addr2" data-ph="City, State ZIP" enterkeyhint="done"></div>
+      <p class="taxlook screen-only" id="taxLook" aria-live="polite" hidden></p>
     </div>
   </section>
 
@@ -83,14 +84,14 @@
     <div class="stampwrap"><span class="stamp off" id="stamp" role="button" tabindex="0" aria-pressed="false">Paid in full</span></div>
   <div class="totals" id="totals">
     <div class="row"><span class="l">Subtotal</span><span class="v">$<span id="sub">0.00</span></span></div>
-    <div class="row"><span class="l">Sales tax <span class="rate"><b contenteditable="true" data-k="rate" data-ph="0.0" inputmode="decimal" enterkeyhint="done"></b>%</span></span><span class="v">$<span id="tax">0.00</span></span></div>
+    <div class="row"><span class="l">Sales tax <span class="rate"><b contenteditable="true" data-k="rate" data-ph="0.0" inputmode="decimal" enterkeyhint="done"></b>%</span><span class="taxloc" id="taxLocTxt"></span></span><span class="v">$<span id="tax">0.00</span></span></div>
     <div class="row tot"><span class="l">Total</span><span class="v">$<span id="total">0.00</span></span></div>
     <div class="row" id="paidRow"><span class="l" id="paidLbl">Deposit to start</span><span class="v">$<b contenteditable="true" data-k="paid" data-ph="0.00" inputmode="decimal" enterkeyhint="done"></b></span></div>
     <div class="row method" id="methodRow"><span class="l">Paid by</span><span class="v"><b contenteditable="true" data-k="method" data-ph="Cash / Check / Card" enterkeyhint="done"></b></span></div>
     <div class="row bal" id="balRow"><span class="l" id="balLbl">Due at completion</span><span class="v">$<span id="bal">0.00</span></span></div>
   </div>
   </div>
-  <p class="taxhint screen-only">Sales tax goes by the job address. <a href="https://webgis.dor.wa.gov/taxratelookup/SalesTax.aspx" target="_blank" rel="noopener">Look up the rate</a></p>
+  <p class="taxhint screen-only">The rate fills in from the job address. <a href="https://webgis.dor.wa.gov/taxratelookup/SalesTax.aspx" target="_blank" rel="noopener">Look up the rate</a></p>
 
   <div class="terms" id="terms" contenteditable="true" data-k="terms" data-ph="Terms (optional)"></div>
   <div class="note" id="note" contenteditable="true" data-k="note" data-ph="Notes (optional)"></div>
