@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#2a211a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="S&amp;S Receipt">
+<link rel="manifest" href="/receipt-manifest.json">
+<link rel="icon" type="image/png" href="/assets/receipt-icon-192.png">
+<link rel="apple-touch-icon" href="/assets/receipt-icon-192.png">
+<title>Estimate · S&amp;S Remodels</title>
+<link rel="stylesheet" href="/assets/receipt.css">
+</head>
+<body class="mode-estimate">
+
+<div class="bar">
+  <div class="modes" role="group" aria-label="Document type">
+    <button type="button" data-mode="Estimate" aria-pressed="true">Estimate</button>
+    <button type="button" data-mode="Invoice" aria-pressed="false">Invoice</button>
+    <button type="button" data-mode="Receipt" aria-pressed="false">Receipt</button>
+  </div>
+  <div class="acts">
+    <button type="button" class="pri" id="btnShare">Send PDF</button>
+    <button type="button" id="btnPrint">Print</button>
+    <button type="button" id="btnContact">Import contact</button>
+    <button type="button" id="btnNew">+ New</button>
+  </div>
+  <input type="file" id="vcf" accept=".vcf,text/vcard,text/x-vcard,text/directory" hidden>
+  <div class="hint" id="hint" aria-live="polite">Tap any line and type. Saves on this phone as you go.</div>
+</div>
+
+<main class="sheet" id="sheet">
+  <div class="band" aria-hidden="true"></div>
+
+  <header class="lh">
+    <div class="brand">
+      <img src="/assets/receipt-logo.png" alt="S&amp;S Remodels LLC, Spokane, WA" width="760" height="350">
+      <div class="who">
+        <div>(509) 200-3095 · shaun@ssremodelz.com · ssremodelz.com</div>
+        <div>WA Contractor Reg. #SSREMRL741PZ</div>
+      </div>
+    </div>
+    <div class="doc">
+      <h1 class="t" id="docTitle">Estimate</h1>
+      <div class="meta">
+        <span>No. <b contenteditable="true" data-k="num" data-ph="street no." enterkeyhint="done"></b></span>
+        <span>Date <b contenteditable="true" data-k="date" data-ph="Nov 19, 2026" enterkeyhint="done"></b></span>
+      </div>
+    </div>
+  </header>
+
+  <section class="two">
+    <div>
+      <div class="lbl">Customer</div>
+      <div class="fld" contenteditable="true" data-k="cname" data-ph="Name" enterkeyhint="next"></div>
+      <div class="fld" contenteditable="true" data-k="cphone" data-ph="Phone" inputmode="tel" enterkeyhint="next"></div>
+      <div class="fld" contenteditable="true" data-k="cemail" data-ph="Email" inputmode="email" enterkeyhint="next"></div>
+    </div>
+    <div>
+      <div class="lbl">Job address</div>
+      <div class="fld" contenteditable="true" data-k="addr1" data-ph="Street" enterkeyhint="next"></div>
+      <div class="fld" contenteditable="true" data-k="addr2" data-ph="City, State ZIP" enterkeyhint="done"></div>
+    </div>
+  </section>
+
+  <section id="svcSec">
+    <h2 class="bar-h" id="svcHead">Scope of work</h2>
+    <div class="svc" id="svcBox" contenteditable="true" data-k="svc" data-ph="Describe the work: what gets done, where, and with what materials."></div>
+  </section>
+
+  <section class="items-sec">
+    <h2 class="bar-h">Line items</h2>
+    <div class="items" id="items"></div>
+    <button type="button" class="addrow" id="btnAdd">+ Add line</button>
+  </section>
+
+  <div class="money">
+    <div class="stampwrap"><span class="stamp off" id="stamp" role="button" tabindex="0" aria-pressed="false">Paid in full</span></div>
+  <div class="totals" id="totals">
+    <div class="row"><span class="l">Subtotal</span><span class="v">$<span id="sub">0.00</span></span></div>
+    <div class="row"><span class="l">Sales tax <span class="rate"><b contenteditable="true" data-k="rate" data-ph="0.0" inputmode="decimal" enterkeyhint="done"></b>%</span></span><span class="v">$<span id="tax">0.00</span></span></div>
+    <div class="row tot"><span class="l">Total</span><span class="v">$<span id="total">0.00</span></span></div>
+    <div class="row" id="paidRow"><span class="l" id="paidLbl">Deposit to start</span><span class="v">$<b contenteditable="true" data-k="paid" data-ph="0.00" inputmode="decimal" enterkeyhint="done"></b></span></div>
+    <div class="row method" id="methodRow"><span class="l">Paid by</span><span class="v"><b contenteditable="true" data-k="method" data-ph="Cash / Check / Card" enterkeyhint="done"></b></span></div>
+    <div class="row bal" id="balRow"><span class="l" id="balLbl">Due at completion</span><span class="v">$<span id="bal">0.00</span></span></div>
+  </div>
+  </div>
+  <p class="taxhint screen-only">Sales tax goes by the job address. <a href="https://webgis.dor.wa.gov/taxratelookup/SalesTax.aspx" target="_blank" rel="noopener">Look up the rate</a></p>
+
+  <div class="terms" id="terms" contenteditable="true" data-k="terms" data-ph="Terms (optional)"></div>
+  <div class="note" id="note" contenteditable="true" data-k="note" data-ph="Notes (optional)"></div>
+
+  <section class="sigs">
+    <div>
+      <div class="sig-pad"><canvas id="sigShaun"></canvas><span class="sig-hint">Sign here</span><button type="button" class="sig-clear" data-sig="sigShaun">Clear</button></div>
+      <div class="s">Shaun Thill · S&amp;S Remodels LLC</div>
+    </div>
+    <div>
+      <div class="sig-pad"><canvas id="sigCust"></canvas><span class="sig-hint">Sign here</span><button type="button" class="sig-clear" data-sig="sigCust">Clear</button></div>
+      <div class="s">Customer</div>
+    </div>
+  </section>
+
+  <footer class="foot"><b>S&amp;S Remodels LLC</b> · Spokane, WA · WA Contractor Reg. #SSREMRL741PZ · ssremodelz.com · (509) 200-3095 · shaun@ssremodelz.com</footer>
+</main>
+
+<script src="/assets/receipt.js"></script>
+</body>
+</html>

@@ -1,0 +1,424 @@
+/* S&S Remodels: estimate, invoice and receipt builder (receipt.html).
+   Everything typed here is saved only on this device (localStorage). */
+(function () {
+  'use strict';
+
+  var KEY = 'ss_receipt_v1', SIG_KEY = 'ss_receipt_sig_v1';
+  var LIB = '/assets/vendor/html2pdf.bundle.min.js';
+  var MODES = ['Estimate', 'Invoice', 'Receipt'];
+  var LABELS = {
+    Estimate: { svc: 'Scope of work', paid: 'Deposit to start', bal: 'Due at completion',
+      ph: 'Describe the work: what gets done, where, and with what materials. Note anything the homeowner should know before deciding.' },
+    Invoice: { svc: 'Work performed', paid: 'Paid to date', bal: 'Balance due',
+      ph: 'Describe the work done and the materials used.' },
+    Receipt: { svc: 'Work performed', paid: 'Amount paid', bal: 'Balance due',
+      ph: 'Describe the work done and the materials used, and anything the customer should keep for their records.' }
+  };
+  var TERMS = {
+    Estimate: 'Good for 30 days from the date above. Covers the scope described. Any change is agreed in writing before the work is done. Work is scheduled once the homeowner agreement is signed.',
+    Invoice: 'Due on receipt. Thank you for your business.',
+    Receipt: 'Thank you for your business. Keep this receipt for your records.'
+  };
+  var MULTI = { svc: 1, note: 1, terms: 1 };
+  var INAPP = /FBAN|FBAV|FB_IAB|Instagram|Line\/|Snapchat|MicroMessenger|TikTok|BytedanceWebview|LinkedInApp/i.test(navigator.userAgent || '');
+
+  function $(s) { return document.querySelector(s); }
+  function readStore(k) { try { var v = JSON.parse(localStorage.getItem(k) || '{}'); return v && typeof v === 'object' ? v : {}; } catch (e) { return {}; } }
+  function writeStore(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* private mode: keeps working, just does not save */ } }
+
+  function makePlain(el) {
+    try { el.contentEditable = 'plaintext-only'; } catch (e) { /* older browsers */ }
+    if (el.contentEditable !== 'plaintext-only') el.contentEditable = 'true';
+  }
+  function fixEmpty(el) { if (el.innerHTML === '<br>' || el.textContent === '\n') el.innerHTML = ''; }
+  function txt(el) { return MULTI[el.dataset.k] ? el.innerText.replace(/\n+$/, '') : el.textContent; }
+  function plainPaste(e) {
+    var cd = e.clipboardData || window.clipboardData; if (!cd) return;
+    e.preventDefault();
+    var s = cd.getData('text');
+    if (document.execCommand) document.execCommand('insertText', false, s);
+  }
+  function num(v) { v = String(v || '').replace(/[^0-9.\-]/g, ''); var n = parseFloat(v); return isFinite(n) ? n : 0; }
+  function cents(v) { return Math.round(num(v) * 100); }
+  function fmt(c) { return (c / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function today() { return new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
+
+  var F = document.querySelectorAll('[data-k]');
+  var state = readStore(KEY);
+  if (!state.terms || typeof state.terms !== 'object') state.terms = {};
+  var mode = MODES.indexOf(state.mode) >= 0 ? state.mode : 'Estimate';
+  var items = Array.isArray(state.items) && state.items.length ? state.items : [{ d: '', a: '' }];
+  var btnShare = $('#btnShare');
+  var ready = null; /* a built PDF waiting for a tap, when the share sheet needs a fresh tap */
+
+  function field(k) { return $('[data-k="' + k + '"]'); }
+  function get(k) { var el = field(k); return el ? txt(el).trim() : ''; }
+  function setK(k, v) { var el = field(k); if (el) el.textContent = v || ''; }
+  function hint(msg, go) { var h = $('#hint'); h.textContent = msg; h.classList.toggle('go', !!go); }
+
+  function save() {
+    F.forEach(function (el) {
+      var k = el.dataset.k;
+      if (k === 'terms') state.terms[mode] = txt(el); else state[k] = txt(el);
+    });
+    state.mode = mode;
+    state.items = items;
+    writeStore(KEY, state);
+    if (ready) { ready = null; btnShare.textContent = 'Send PDF'; hint('Tap any line and type. Saves on this phone as you go.'); }
+  }
+
+  function setStamp(on) {
+    var s = $('#stamp');
+    s.classList.toggle('off', !on);
+    s.setAttribute('aria-pressed', on ? 'true' : 'false');
+    state.stamp = !!on;
+  }
+
+  function calc() {
+    var sub = 0;
+    items.forEach(function (it) { sub += cents(it.a); });
+    var rate = num(get('rate'));
+    var tax = Math.round(sub * rate / 100 + 1e-9);
+    var total = sub + tax, paid = cents(get('paid')), bal = Math.max(0, total - paid);
+    $('#sub').textContent = fmt(sub);
+    $('#tax').textContent = fmt(tax);
+    $('#total').textContent = fmt(total);
+    $('#bal').textContent = fmt(bal);
+    var noPaid = !get('paid');
+    $('#paidRow').classList.toggle('skip', noPaid && mode !== 'Receipt');
+    $('#balRow').classList.toggle('skip', noPaid && mode === 'Estimate');
+    $('#methodRow').classList.toggle('skip', !get('method'));
+    if (state.stampAuto !== false) setStamp(total > 0 && bal === 0);
+    $('#svcSec').classList.toggle('blank', !get('svc'));
+    $('#note').classList.toggle('blank', !get('note'));
+    $('#terms').classList.toggle('blank', !get('terms'));
+  }
+
+  function applyMode() {
+    var L = LABELS[mode];
+    $('#docTitle').textContent = mode;
+    document.title = mode + ' · S&S Remodels';
+    document.body.classList.remove('mode-estimate', 'mode-invoice', 'mode-receipt');
+    document.body.classList.add('mode-' + mode.toLowerCase());
+    document.querySelectorAll('.modes button').forEach(function (b) {
+      b.setAttribute('aria-pressed', b.dataset.mode === mode ? 'true' : 'false');
+    });
+    $('#svcHead').textContent = L.svc;
+    $('#svcBox').dataset.ph = L.ph;
+    $('#paidLbl').textContent = L.paid;
+    $('#balLbl').textContent = L.bal;
+    $('#terms').textContent = Object.prototype.hasOwnProperty.call(state.terms, mode) ? state.terms[mode] : TERMS[mode];
+  }
+
+  function numFromAddr() {
+    if (state.numManual) return;
+    var m = get('addr1').match(/^\s*(\d+)/);
+    if (m) setK('num', m[1]);
+  }
+
+  /* line items */
+  function renderItems() {
+    var box = $('#items');
+    box.textContent = '';
+    items.forEach(function (it, i) {
+      var row = document.createElement('div'); row.className = 'item';
+      var d = document.createElement('div'); d.className = 'desc'; d.dataset.ph = 'Line item'; d.setAttribute('enterkeyhint', 'next');
+      var w = document.createElement('span'); w.className = 'amtw'; w.appendChild(document.createTextNode('$'));
+      var a = document.createElement('b'); a.className = 'amt'; a.dataset.ph = '0.00';
+      a.setAttribute('inputmode', 'decimal'); a.setAttribute('enterkeyhint', 'next');
+      w.appendChild(a);
+      var x = document.createElement('button'); x.type = 'button'; x.className = 'x'; x.setAttribute('aria-label', 'Remove line'); x.textContent = '✕';
+      makePlain(d); makePlain(a);
+      d.textContent = it.d || ''; a.textContent = it.a || '';
+      function blankCheck() { row.classList.toggle('blank', !d.textContent.trim() && !a.textContent.trim()); }
+      blankCheck();
+      d.addEventListener('input', function () { fixEmpty(d); items[i].d = d.textContent; blankCheck(); save(); });
+      a.addEventListener('input', function () { fixEmpty(a); items[i].a = a.textContent; blankCheck(); calc(); save(); });
+      a.addEventListener('blur', function () {
+        if (a.textContent.trim()) { a.textContent = fmt(cents(a.textContent)); items[i].a = a.textContent; }
+        calc(); save();
+      });
+      [d, a].forEach(function (el) {
+        el.addEventListener('keydown', function (e) {
+          if (e.key !== 'Enter') return;
+          e.preventDefault();
+          if (el === d) a.focus();
+          else if (i === items.length - 1) addItem();
+          else box.children[i + 1].querySelector('.desc').focus();
+        });
+        el.addEventListener('paste', plainPaste);
+      });
+      x.addEventListener('click', function () {
+        items.splice(i, 1);
+        if (!items.length) items.push({ d: '', a: '' });
+        renderItems(); calc(); save();
+      });
+      row.appendChild(d); row.appendChild(w); row.appendChild(x);
+      box.appendChild(row);
+    });
+  }
+  function addItem() {
+    items.push({ d: '', a: '' });
+    renderItems(); calc(); save();
+    $('#items').lastChild.querySelector('.desc').focus();
+  }
+  $('#btnAdd').addEventListener('click', addItem);
+
+  /* fields */
+  F.forEach(function (el) {
+    var k = el.dataset.k;
+    makePlain(el);
+    el.addEventListener('input', function () {
+      fixEmpty(el);
+      if (k === 'num') state.numManual = !!el.textContent.trim();
+      if (k === 'addr1') numFromAddr();
+      calc(); save();
+    });
+    el.addEventListener('blur', function () {
+      if (k === 'paid' && el.textContent.trim()) el.textContent = fmt(cents(el.textContent));
+      if (k === 'rate' && el.textContent.trim()) el.textContent = String(+num(el.textContent).toFixed(3));
+      calc(); save();
+    });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !MULTI[k]) { e.preventDefault(); el.blur(); }
+    });
+    el.addEventListener('paste', plainPaste);
+  });
+
+  /* document type */
+  document.querySelectorAll('.modes button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (b.dataset.mode === mode) return;
+      save();
+      mode = b.dataset.mode;
+      applyMode(); calc(); save();
+    });
+  });
+
+  /* paid in full stamp (receipts) */
+  function toggleStamp() { state.stampAuto = false; setStamp($('#stamp').classList.contains('off')); save(); }
+  $('#stamp').addEventListener('click', toggleStamp);
+  $('#stamp').addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleStamp(); } });
+
+  /* signatures */
+  var sigs = readStore(SIG_KEY);
+  function initSig(id) {
+    var c = document.getElementById(id), pad = c.parentNode, hintEl = pad.querySelector('.sig-hint');
+    var ctx = null, lastW = 0, drawing = false, last = null;
+    function setup() {
+      var r = c.getBoundingClientRect();
+      if (!r.width || Math.round(r.width) === lastW) return;
+      lastW = Math.round(r.width);
+      var dpr = window.devicePixelRatio || 1;
+      c.width = Math.round(r.width * dpr); c.height = Math.round(r.height * dpr);
+      ctx = c.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.lineWidth = 2.2; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.strokeStyle = '#1b2524'; ctx.fillStyle = '#1b2524';
+      if (sigs[id]) restore(sigs[id]);
+    }
+    function restore(url) {
+      var im = new Image();
+      im.onload = function () { var r = c.getBoundingClientRect(); ctx.drawImage(im, 0, 0, r.width, r.height); hintEl.style.display = 'none'; };
+      im.src = url;
+    }
+    function pt(e) { var r = c.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+    c.addEventListener('pointerdown', function (e) {
+      if (!ctx) setup();
+      drawing = true; last = pt(e); hintEl.style.display = 'none';
+      try { c.setPointerCapture(e.pointerId); } catch (err) { /* fine */ }
+      ctx.beginPath(); ctx.arc(last.x, last.y, 1.1, 0, Math.PI * 2); ctx.fill();
+      e.preventDefault();
+    });
+    c.addEventListener('pointermove', function (e) {
+      if (!drawing) return;
+      var p = pt(e);
+      ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+      last = p; e.preventDefault();
+    });
+    function end() {
+      if (!drawing) return;
+      drawing = false;
+      sigs[id] = c.toDataURL('image/png');
+      writeStore(SIG_KEY, sigs);
+    }
+    c.addEventListener('pointerup', end);
+    c.addEventListener('pointercancel', end);
+    c.clearSig = function () {
+      if (ctx) { ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, c.width, c.height); ctx.restore(); }
+      hintEl.style.display = '';
+      delete sigs[id]; writeStore(SIG_KEY, sigs);
+    };
+    setup();
+    window.addEventListener('resize', setup);
+  }
+  function clearSig(id) { var c = document.getElementById(id); if (c && c.clearSig) c.clearSig(); }
+  document.querySelectorAll('.sig-clear').forEach(function (b) { b.addEventListener('click', function () { clearSig(b.dataset.sig); }); });
+
+  /* new document */
+  $('#btnNew').addEventListener('click', function () {
+    if (!window.confirm('Start a new ' + mode.toLowerCase() + '? This clears the one on screen.')) return;
+    var terms = state.terms;
+    F.forEach(function (el) { var k = el.dataset.k; if (k !== 'rate' && k !== 'terms') el.textContent = ''; });
+    state = { terms: terms, mode: mode };
+    items = [{ d: '', a: '' }];
+    setK('date', today());
+    renderItems(); applyMode(); setStamp(false); calc(); save();
+    clearSig('sigCust'); /* Shaun's own signature stays */
+    window.scrollTo(0, 0);
+  });
+
+  /* contacts: the phone's contact picker where there is one (Android Chrome), else a .vcf file */
+  function fillContact(c) {
+    if (c.name) setK('cname', c.name);
+    if (c.phone) setK('cphone', c.phone);
+    if (c.email) setK('cemail', c.email);
+    if (c.street) setK('addr1', c.street);
+    if (c.csz) setK('addr2', c.csz);
+    numFromAddr(); calc(); save();
+    hint(c.name ? 'Added ' + c.name + '.' : 'No contact found.');
+  }
+  $('#btnContact').addEventListener('click', function () {
+    var cm = navigator.contacts;
+    if (!cm || !cm.select || !window.isSecureContext) { $('#vcf').click(); return; }
+    var props = ['name', 'tel', 'email'];
+    (cm.getProperties ? cm.getProperties() : Promise.resolve(props)).then(function (sup) {
+      if (sup.indexOf('address') >= 0) props.push('address');
+      return cm.select(props, { multiple: false });
+    }).then(function (list) {
+      if (!list || !list.length) return;
+      var p = list[0], out = {};
+      out.name = (p.name && p.name[0]) || '';
+      out.phone = (p.tel && p.tel[0]) || '';
+      out.email = (p.email && p.email[0]) || '';
+      var ad = p.address && p.address[0];
+      if (ad) {
+        out.street = (ad.addressLine || []).join(', ');
+        var cs = [ad.city, ad.region].filter(Boolean).join(', ');
+        out.csz = [cs, ad.postalCode].filter(Boolean).join(' ');
+      }
+      fillContact(out);
+    }).catch(function () { $('#vcf').click(); });
+  });
+  $('#vcf').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0]; if (!f) return;
+    var r = new FileReader();
+    r.onload = function () { fillContact(parseVCard(String(r.result))); e.target.value = ''; };
+    r.readAsText(f);
+  });
+  function unQP(v) { try { return v.replace(/=([0-9A-F]{2})/gi, function (m, h) { return String.fromCharCode(parseInt(h, 16)); }); } catch (e) { return v; } }
+  function clean(x) { return String(x == null ? '' : x).replace(/\\n/gi, ' ').replace(/\\,/g, ',').replace(/\\;/g, ';').trim(); }
+  function parseVCard(text) {
+    var out = {}, best = -1;
+    var u = String(text).replace(/=\r?\n/g, '').replace(/\r\n[ \t]/g, '').replace(/\n[ \t]/g, '');
+    u.split(/\r\n|\n|\r/).forEach(function (line) {
+      var i = line.indexOf(':'); if (i < 0) return;
+      var raw = line.slice(0, i), key = raw.split(';')[0], val = line.slice(i + 1);
+      if (key.indexOf('.') >= 0) key = key.slice(key.indexOf('.') + 1);
+      key = key.toUpperCase();
+      if (/ENCODING=QUOTED-PRINTABLE/i.test(raw)) val = unQP(val);
+      if (key === 'FN' && !out.name) out.name = clean(val);
+      else if (key === 'N' && !out.name) { var p = val.split(';'); out.name = clean((p[1] || '') + ' ' + (p[0] || '')); }
+      else if (key === 'TEL' && !out.phone) out.phone = clean(val.replace(/^tel:/i, ''));
+      else if (key === 'EMAIL' && !out.email) out.email = clean(val.replace(/^mailto:/i, ''));
+      else if (key === 'ADR') {
+        var a = val.split(';').map(clean), street = a[2] || '';
+        var csz = [a[3], a[4]].filter(Boolean).join(', ');
+        if (a[5]) csz = (csz ? csz + ' ' : '') + a[5];
+        if (!street && !csz) street = a.filter(Boolean).join(', ');
+        var score = (street ? 2 : 0) + (csz ? 1 : 0) + a.filter(Boolean).length;
+        if ((street || csz) && score > best) { best = score; out.street = street; out.csz = csz; }
+      }
+    });
+    return out;
+  }
+
+  /* PDF: build it on the phone, then open the share sheet (text, email, Drive) */
+  function loadLib() {
+    return new Promise(function (ok, no) {
+      if (window.html2pdf) { ok(); return; }
+      var s = document.createElement('script'); s.src = LIB; s.onload = ok; s.onerror = no;
+      document.head.appendChild(s);
+    });
+  }
+  function pdfName() {
+    var last = get('cname').split(/\s+/).pop();
+    return ['SS-Remodels', mode, last, get('num')].filter(Boolean).join('-').replace(/[^A-Za-z0-9-]+/g, '') + '.pdf';
+  }
+  function makePdf() {
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    var name = pdfName();
+    return loadLib().then(function () {
+      document.body.classList.add('pdfing');
+      return document.fonts && document.fonts.ready ? document.fonts.ready : null;
+    }).then(function () {
+      return window.html2pdf().set({
+        margin: [0.3, 0, 0.3, 0],
+        filename: name,
+        image: { type: 'jpeg', quality: 0.95 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#fdfdfd', scrollX: 0, scrollY: 0 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+        pagebreak: { mode: ['css', 'legacy'], avoid: ['.item', '.totals', '.terms', '.sigs', '.two', '.foot'] }
+      }).from($('#sheet')).outputPdf('blob');
+    }).then(function (blob) {
+      document.body.classList.remove('pdfing');
+      return new File([blob], name, { type: 'application/pdf' });
+    }, function (err) {
+      document.body.classList.remove('pdfing');
+      throw err;
+    });
+  }
+  function download(file) {
+    var url = URL.createObjectURL(file), a = document.createElement('a');
+    a.href = url; a.download = file.name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 15000);
+  }
+  function send(file) {
+    if (navigator.canShare && navigator.share && navigator.canShare({ files: [file] })) {
+      return navigator.share({ files: [file], title: file.name }).then(function () {
+        hint('Sent.');
+      }, function (e) {
+        if (e && e.name === 'AbortError') { hint('Not sent. Tap Send PDF to try again.'); return; }
+        ready = file; btnShare.textContent = 'Tap to send';
+        hint('PDF is ready. Tap the green button to send it.', true);
+      });
+    }
+    download(file);
+    hint('PDF saved: ' + file.name);
+    return Promise.resolve();
+  }
+  btnShare.addEventListener('click', function () {
+    if (ready) { var f = ready; ready = null; btnShare.textContent = 'Send PDF'; send(f); return; }
+    btnShare.disabled = true; btnShare.textContent = 'Building PDF…';
+    makePdf().then(function (f) {
+      btnShare.disabled = false; btnShare.textContent = 'Send PDF';
+      return send(f);
+    }).catch(function () {
+      btnShare.disabled = false; btnShare.textContent = 'Send PDF';
+      hint('Could not build the PDF. Try Print, then Save as PDF.');
+    });
+  });
+  $('#btnPrint').addEventListener('click', function () {
+    if (INAPP) { btnShare.click(); return; }
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    window.print();
+  });
+
+  /* start */
+  load();
+  function load() {
+    F.forEach(function (el) { var k = el.dataset.k; if (k !== 'terms' && state[k]) el.textContent = state[k]; });
+    if (!state.date) setK('date', today());
+    renderItems();
+    applyMode();
+    if (state.stampAuto === false) setStamp(state.stamp);
+    calc();
+    ['sigShaun', 'sigCust'].forEach(initSig);
+  }
+
+  /* works offline once opened (job sites with no signal) */
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    navigator.serviceWorker.register('/receipt-sw.js', { scope: '/receipt' }).catch(function () { /* fine */ });
+  }
+})();
