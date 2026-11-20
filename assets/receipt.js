@@ -51,6 +51,48 @@
   var btnShare = $('#btnShare');
   var ready = null; /* a built PDF waiting for a tap, when the share sheet needs a fresh tap */
 
+  /* saved jobs: every document with something in it is kept on this phone (newest 60) */
+  var JOBS_KEY = 'ss_receipt_jobs_v1', JOBS_MAX = 60, jobTimer = null;
+  var FIELDS = ['num', 'date', 'cname', 'cphone', 'cemail', 'addr1', 'addr2', 'svc', 'rate', 'paid', 'method', 'note'];
+  function newId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  if (!state.id) state.id = newId();
+  function cleanDoc(src) {
+    var s = {};
+    if (!src || typeof src !== 'object') return s;
+    FIELDS.forEach(function (k) { if (typeof src[k] === 'string') s[k] = src[k].slice(0, 6000); });
+    s.mode = MODES.indexOf(src.mode) >= 0 ? src.mode : 'Estimate';
+    s.items = (Array.isArray(src.items) ? src.items : []).slice(0, 200).map(function (it) {
+      return { d: String((it && it.d) || '').slice(0, 600), a: String((it && it.a) || '').slice(0, 40) };
+    });
+    s.terms = {};
+    if (src.terms && typeof src.terms === 'object') MODES.forEach(function (m) { if (typeof src.terms[m] === 'string') s.terms[m] = src.terms[m].slice(0, 3000); });
+    if (typeof src.id === 'string') s.id = src.id.slice(0, 40);
+    if (src.numManual) s.numManual = true;
+    if (src.stampAuto === false) { s.stampAuto = false; s.stamp = !!src.stamp; }
+    return s;
+  }
+  function hasContent(s) {
+    return ['cname', 'addr1', 'svc', 'cphone'].some(function (k) { return (s[k] || '').trim(); }) ||
+      (s.items || []).some(function (it) { return (it.d || '').trim() || (it.a || '').trim(); });
+  }
+  function totalOf(s) {
+    var sub = 0;
+    (s.items || []).forEach(function (it) { sub += cents(it.a); });
+    return sub + Math.round(sub * num(s.rate) / 100 + 1e-9);
+  }
+  function storeJob() {
+    clearTimeout(jobTimer);
+    if (!hasContent(state)) return;
+    var jobs = readStore(JOBS_KEY);
+    jobs[state.id] = { t: Date.now(), s: cleanDoc(state) };
+    var ids = Object.keys(jobs).sort(function (a, b) { return (jobs[b].t || 0) - (jobs[a].t || 0); });
+    ids.slice(JOBS_MAX).forEach(function (id) { delete jobs[id]; });
+    writeStore(JOBS_KEY, jobs);
+  }
+  function keepJob() { clearTimeout(jobTimer); jobTimer = setTimeout(storeJob, 500); }
+  window.addEventListener('pagehide', storeJob);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') storeJob(); });
+
   function field(k) { return $('[data-k="' + k + '"]'); }
   function get(k) { var el = field(k); return el ? txt(el).trim() : ''; }
   function setK(k, v) { var el = field(k); if (el) el.textContent = v || ''; }
@@ -64,6 +106,7 @@
     state.mode = mode;
     state.items = items;
     writeStore(KEY, state);
+    keepJob();
     if (ready) { ready = null; btnShare.textContent = 'Send PDF'; hint('Tap any line and type. Saves on this phone as you go.'); }
   }
 
@@ -257,10 +300,12 @@
 
   /* new document */
   $('#btnNew').addEventListener('click', function () {
-    if (!window.confirm('Start a new ' + mode.toLowerCase() + '? This clears the one on screen.')) return;
+    var kept = hasContent(state);
+    if (!window.confirm('Start a new ' + mode.toLowerCase() + '?' + (kept ? ' The one on screen stays saved under Open.' : ''))) return;
+    storeJob();
     var terms = state.terms;
     F.forEach(function (el) { var k = el.dataset.k; if (k !== 'rate' && k !== 'terms') el.textContent = ''; });
-    state = { terms: terms, mode: mode };
+    state = { terms: terms, mode: mode, id: newId() };
     items = [{ d: '', a: '' }];
     setK('date', today());
     renderItems(); applyMode(); setStamp(false); calc(); save();
@@ -359,7 +404,10 @@
         html2canvas: { scale: 2, useCORS: true, backgroundColor: '#fdfdfd', scrollX: 0, scrollY: 0 },
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
         pagebreak: { mode: ['css', 'legacy'], avoid: ['.item', '.totals', '.terms', '.sigs', '.two', '.foot'] }
-      }).from($('#sheet')).outputPdf('blob');
+      }).from($('#sheet')).toPdf().get('pdf').then(function (pdf) {
+        /* a copy of the job rides inside the PDF, so Open a PDF can bring it back */
+        pdf.setProperties({ title: name.replace(/\.pdf$/, ''), subject: mode + ' from S&S Remodels LLC', author: 'S&S Remodels LLC', creator: 'ssremodelz.com', keywords: PDF_TAG + b64enc(JSON.stringify(cleanDoc(state))) + PDF_END });
+      }).outputPdf('blob');
     }).then(function (blob) {
       document.body.classList.remove('pdfing');
       return new File([blob], name, { type: 'application/pdf' });
@@ -403,6 +451,96 @@
     if (INAPP) { btnShare.click(); return; }
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     window.print();
+  });
+
+  /* Open: saved jobs on this phone, or a PDF sent from here */
+  var PDF_TAG = 'SSRDATA1:', PDF_END = ':SSREND';
+  function b64enc(str) {
+    var bytes = new TextEncoder().encode(str), bin = '';
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin);
+  }
+  function b64dec(b) {
+    var bin = atob(b), bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+  function openDoc(src, asCopy) {
+    storeJob();
+    var s = cleanDoc(src);
+    if (asCopy || !s.id) { s.id = newId(); }
+    if (asCopy) { s.date = today(); delete s.stamp; delete s.stampAuto; }
+    state = s;
+    mode = s.mode;
+    items = s.items.length ? s.items : [{ d: '', a: '' }];
+    F.forEach(function (el) { var k = el.dataset.k; if (k !== 'terms') el.textContent = s[k] || ''; });
+    if (!s.date) setK('date', today());
+    var stampWas = !!s.stamp;
+    renderItems(); applyMode();
+    setStamp(false);
+    if (s.stampAuto === false) setStamp(stampWas);
+    calc(); save(); storeJob();
+    clearSig('sigCust'); /* a different job: the customer signs again */
+    window.scrollTo(0, 0);
+  }
+  var dlg = $('#jobsDlg');
+  function jobLabel(s) { return (s.mode || 'Estimate') + ' · ' + ((s.cname || '').trim() || 'No name'); }
+  function renderJobs() {
+    var jobs = readStore(JOBS_KEY), list = $('#jobsList');
+    var ids = Object.keys(jobs).sort(function (a, b) { return (jobs[b].t || 0) - (jobs[a].t || 0); });
+    list.textContent = '';
+    $('#jobsEmpty').hidden = ids.length > 0;
+    ids.forEach(function (id) {
+      var j = jobs[id], s = j.s || {};
+      var li = document.createElement('li'); li.className = 'job' + (id === state.id ? ' cur' : '');
+      var main = document.createElement('button'); main.type = 'button'; main.className = 'main';
+      var t1 = document.createElement('div'); t1.className = 't1'; t1.textContent = jobLabel(s) + (id === state.id ? '  (on screen)' : '');
+      var t2 = document.createElement('div'); t2.className = 't2';
+      t2.textContent = ['$' + fmt(totalOf(s)), (s.addr1 || '').trim(), (s.date || '').trim()].filter(function (x) { return x && x !== '$'; }).join(' · ');
+      main.appendChild(t1); main.appendChild(t2);
+      var copy = document.createElement('button'); copy.type = 'button'; copy.className = 'copy'; copy.textContent = 'Copy';
+      var del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.setAttribute('aria-label', 'Delete'); del.textContent = '✕';
+      main.addEventListener('click', function () {
+        if (id !== state.id) openDoc(s, false);
+        dlg.close(); hint('Opened ' + jobLabel(s) + '.');
+      });
+      copy.addEventListener('click', function () {
+        openDoc(s, true);
+        dlg.close(); hint('New copy of ' + jobLabel(s) + '. Change what you need.', true);
+      });
+      del.addEventListener('click', function () {
+        if (!window.confirm('Delete the saved ' + jobLabel(s) + '?')) return;
+        var all = readStore(JOBS_KEY); delete all[id]; writeStore(JOBS_KEY, all);
+        renderJobs();
+      });
+      var side = document.createElement('div'); side.className = 'side';
+      side.appendChild(copy); side.appendChild(del);
+      li.appendChild(main); li.appendChild(side);
+      list.appendChild(li);
+    });
+  }
+  $('#btnOpen').addEventListener('click', function () {
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    storeJob(); renderJobs();
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+  });
+  $('#jobsClose').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  $('#btnOpenPdf').addEventListener('click', function () { $('#pdfIn').click(); });
+  $('#pdfIn').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0]; if (!f) return;
+    var r = new FileReader();
+    r.onload = function () {
+      e.target.value = '';
+      var text = new TextDecoder('latin1').decode(new Uint8Array(r.result));
+      var m = text.match(/SSRDATA1:([A-Za-z0-9+\/=]+):SSREND/);
+      var doc = null;
+      try { doc = m ? JSON.parse(b64dec(m[1])) : null; } catch (err) { doc = null; }
+      if (!doc) { window.alert('That PDF has no saved job in it. Only PDFs made with Send PDF can be opened.'); return; }
+      openDoc(doc, true);
+      dlg.close(); hint('Opened from ' + f.name + '.', true);
+    };
+    r.readAsArrayBuffer(f);
   });
 
   /* start */

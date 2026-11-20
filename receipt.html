@@ -26,6 +26,7 @@
   <div class="acts">
     <button type="button" class="pri" id="btnShare">Send PDF</button>
     <button type="button" id="btnPrint">Print</button>
+    <button type="button" id="btnOpen">Open</button>
     <button type="button" id="btnContact">Import contact</button>
     <button type="button" id="btnNew">+ New</button>
   </div>
@@ -107,6 +108,17 @@
 
   <footer class="foot"><b>S&amp;S Remodels LLC</b> · Spokane, WA · WA Contractor Reg. #SSREMRL741PZ · ssremodelz.com · (509) 200-3095 · shaun@ssremodelz.com</footer>
 </main>
+
+<dialog class="jobs" id="jobsDlg" aria-labelledby="jobsTitle">
+  <div class="jobs-head"><h2 id="jobsTitle">Saved on this phone</h2><button type="button" class="close" id="jobsClose">Close</button></div>
+  <div class="jobs-body">
+    <p class="jobs-tip">Tap a job to keep working on it. Copy starts a new one from it.</p>
+    <ul class="jobs-list" id="jobsList"></ul>
+    <p class="jobs-empty" id="jobsEmpty">Nothing saved yet. Jobs save here as you type.</p>
+    <button type="button" class="openpdf" id="btnOpenPdf">Open a PDF you sent</button>
+    <input type="file" id="pdfIn" accept="application/pdf,.pdf" hidden>
+  </div>
+</dialog>
 
 <script src="/assets/receipt.js"></script>
 </body>
